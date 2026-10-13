@@ -1,0 +1,348 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin | JNHL Commerce</title>
+  <style>
+    :root {
+      --navy: #071426;
+      --panel: #0d2038;
+      --blue: #1688ff;
+      --line: #203651;
+      --muted: #9fb0c6;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 24px;
+      background: var(--navy); color: #f7fbff;
+      font-family: Arial, sans-serif;
+    }
+    main { max-width: 900px; margin: auto; }
+    h1, h2 { margin-top: 0; }
+    .panel {
+      background: var(--panel); border: 1px solid var(--line);
+      border-radius: 14px; padding: 20px; margin: 18px 0;
+    }
+    input, textarea, select {
+      width: 100%; padding: 12px; margin: 7px 0 14px;
+      border: 1px solid var(--line); border-radius: 8px;
+      background: #071426; color: white; font: inherit;
+    }
+    label { display: block; color: #c3d2e5; }
+    button, .btn {
+      border: 0; border-radius: 8px; padding: 12px 16px;
+      background: var(--blue); color: white; font-weight: bold;
+      cursor: pointer; display: inline-block; margin: 4px 4px 4px 0;
+      text-decoration: none;
+    }
+    button.secondary { background: #294766; }
+    button.danger { background: #b83246; }
+    .muted { color: var(--muted); }
+    .product {
+      border: 1px solid var(--line); border-radius: 10px;
+      padding: 14px; margin: 12px 0; overflow-wrap: anywhere;
+    }
+    .hidden { display: none !important; }
+    #status { white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>JNHL <span style="color:#1688ff">COMMERCE</span></h1>
+  <p class="muted">Painel administrativo da loja</p>
+  <p><a class="btn" href="../">Ver loja pública</a></p>
+  <p id="status" role="status" aria-live="polite"></p>
+
+  <section id="login" class="panel">
+    <h2>Entrar</h2>
+    <form id="loginForm">
+      <label for="email">E-mail da conta compartilhada</label>
+      <input id="email" type="email" autocomplete="username" required>
+      <label for="password">Senha</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+      <button type="submit">Entrar no painel</button>
+    </form>
+  </section>
+
+  <section id="dashboard" class="hidden">
+    <div class="panel">
+      <h2 id="formTitle">Cadastrar produto</h2>
+      <form id="productForm">
+        <input id="productId" type="hidden">
+        <label for="name">Nome do produto *</label>
+        <input id="name" required maxlength="180">
+        <label for="description">Descrição</label>
+        <textarea id="description" rows="3"></textarea>
+        <label for="category">Categoria *</label>
+        <select id="category" required>
+          <option>Tecnologia</option>
+          <option>Casa e decoração</option>
+          <option>Ferramentas</option>
+          <option>Moda e acessórios</option>
+          <option>Beleza e cuidados</option>
+          <option>Esporte e lazer</option>
+          <option>Geral</option>
+        </select>
+        <label for="imageUrl">URL da imagem</label>
+        <input id="imageUrl" type="url" placeholder="https://...">
+        <label for="price">Preço (opcional, em reais)</label>
+        <input id="price" type="number" min="0" step="0.01">
+        <label for="affiliateUrl">Link da oferta *</label>
+        <input id="affiliateUrl" type="url" required placeholder="https://...">
+        <label>
+          <input id="active" type="checkbox" checked style="width:auto">
+          Produto ativo e visível na loja
+        </label>
+        <button type="submit">Salvar produto</button>
+        <button type="button" class="secondary" id="cancelEdit">Limpar formulário</button>
+      </form>
+    </div>
+
+    <div class="panel">
+      <h2>Produtos cadastrados</h2>
+      <button id="refresh" class="secondary" type="button">Atualizar lista</button>
+      <div id="productList"></div>
+    </div>
+    <button id="logout" class="secondary" type="button">Sair da conta</button>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(() => {
+  const SUPABASE_URL = 'https://irtqenyuevxfuenuqcqq.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_rVnd_c4Pb7ZBSsAY3xX9WQ_EieuPSeR';
+
+  const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const $ = id => document.getElementById(id);
+  const status = $('status');
+  let loading = false;
+
+  function message(text) { status.textContent = text; }
+
+  function safeHttpUrl(value) {
+    try {
+      const url = new URL(value);
+      return url.protocol === 'https:' || url.protocol === 'http:';
+    } catch {
+      return false;
+    }
+  }
+
+  function setLoggedIn(isLoggedIn) {
+    $('login').classList.toggle('hidden', isLoggedIn);
+    $('dashboard').classList.toggle('hidden', !isLoggedIn);
+  }
+
+  async function checkAdmin() {
+    const { data: { session }, error } = await db.auth.getSession();
+    if (error) throw error;
+    if (!session) {
+      setLoggedIn(false);
+      return false;
+    }
+
+    const { data, error: adminError } = await db
+      .from('admin_users')
+      .select('user_id')
+      .eq('user_id', session.user.id)
+      .maybeSingle();
+
+    if (adminError) throw adminError;
+    if (!data) {
+      await db.auth.signOut();
+      setLoggedIn(false);
+      message('Esta conta não está autorizada como administradora.');
+      return false;
+    }
+
+    setLoggedIn(true);
+    return true;
+  }
+
+  $('loginForm').addEventListener('submit', async event => {
+    event.preventDefault();
+    message('Entrando...');
+    try {
+      const { error } = await db.auth.signInWithPassword({
+        email: $('email').value.trim(),
+        password: $('password').value
+      });
+      if (error) throw error;
+      if (await checkAdmin()) {
+        message('Login realizado.');
+        await loadProducts();
+      }
+    } catch (error) {
+      message('Não foi possível entrar: ' + error.message);
+    }
+  });
+
+  function resetForm() {
+    $('productForm').reset();
+    $('productId').value = '';
+    $('active').checked = true;
+    $('formTitle').textContent = 'Cadastrar produto';
+  }
+  $('cancelEdit').addEventListener('click', resetForm);
+
+  $('productForm').addEventListener('submit', async event => {
+    event.preventDefault();
+    if (loading) return;
+    loading = true;
+    message('Salvando produto...');
+
+    try {
+      if (!(await checkAdmin())) throw new Error('Acesso administrativo necessário.');
+
+      const affiliateUrl = $('affiliateUrl').value.trim();
+      const imageUrl = $('imageUrl').value.trim();
+
+      if (!safeHttpUrl(affiliateUrl)) {
+        throw new Error('Informe um link de oferta HTTP ou HTTPS válido.');
+      }
+      if (imageUrl && !safeHttpUrl(imageUrl)) {
+        throw new Error('Informe uma URL de imagem HTTP ou HTTPS válida.');
+      }
+
+      const rawPrice = $('price').value;
+      const product = {
+        name: $('name').value.trim(),
+        description: $('description').value.trim(),
+        category: $('category').value,
+        image_url: imageUrl,
+        price: rawPrice === '' ? null : Number(rawPrice),
+        affiliate_url: affiliateUrl,
+        active: $('active').checked,
+        updated_at: new Date().toISOString()
+      };
+
+      if (!product.name) throw new Error('O nome é obrigatório.');
+      if (rawPrice !== '' && (!Number.isFinite(product.price) || product.price < 0)) {
+        throw new Error('Preço inválido.');
+      }
+
+      const id = $('productId').value;
+      let result;
+
+      if (id) {
+        result = await db.from('products').update(product).eq('id', id);
+      } else {
+        result = await db.from('products').insert(product);
+      }
+      if (result.error) throw result.error;
+
+      resetForm();
+      message('Produto salvo com sucesso.');
+      await loadProducts();
+    } catch (error) {
+      message('Erro ao salvar: ' + error.message);
+    } finally {
+      loading = false;
+    }
+  });
+
+  function addText(parent, tag, text) {
+    const element = document.createElement(tag);
+    element.textContent = text;
+    parent.appendChild(element);
+    return element;
+  }
+
+  async function loadProducts() {
+    const list = $('productList');
+    list.replaceChildren();
+    message('Carregando produtos...');
+
+    const { data, error } = await db
+      .from('products')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      message('Erro ao carregar produtos: ' + error.message);
+      return;
+    }
+
+    if (!data.length) {
+      addText(list, 'p', 'Nenhum produto cadastrado ainda.');
+    }
+
+    data.forEach(product => {
+      const card = document.createElement('article');
+      card.className = 'product';
+      addText(card, 'h3', product.name);
+      addText(card, 'p', 'Categoria: ' + product.category);
+      addText(card, 'p', 'Status: ' + (product.active ? 'Ativo' : 'Inativo'));
+
+      const edit = document.createElement('button');
+      edit.textContent = 'Editar';
+      edit.addEventListener('click', () => {
+        $('productId').value = product.id;
+        $('name').value = product.name || '';
+        $('description').value = product.description || '';
+        $('category').value = product.category || 'Geral';
+        $('imageUrl').value = product.image_url || '';
+        $('price').value = product.price ?? '';
+        $('affiliateUrl').value = product.affiliate_url || '';
+        $('active').checked = !!product.active;
+        $('formTitle').textContent = 'Editar produto';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+      card.appendChild(edit);
+
+      const remove = document.createElement('button');
+      remove.textContent = 'Excluir';
+      remove.className = 'danger';
+      remove.addEventListener('click', async () => {
+        if (!confirm('Excluir "' + product.name + '" permanentemente?')) return;
+        const { error: deleteError } = await db
+          .from('products').delete().eq('id', product.id);
+        if (deleteError) {
+          message('Erro ao excluir: ' + deleteError.message);
+        } else {
+          message('Produto excluído.');
+          await loadProducts();
+        }
+      });
+      card.appendChild(remove);
+      list.appendChild(card);
+    });
+
+    message('Lista atualizada.');
+  }
+
+  $('refresh').addEventListener('click', loadProducts);
+
+  $('logout').addEventListener('click', async () => {
+    const { error } = await db.auth.signOut();
+    if (error) message('Erro ao sair: ' + error.message);
+    else {
+      setLoggedIn(false);
+      resetForm();
+      message('Você saiu da conta.');
+    }
+  });
+
+  db.auth.onAuthStateChange(() => {
+    setTimeout(async () => {
+      try {
+        if (await checkAdmin()) await loadProducts();
+      } catch (error) {
+        message('Erro de autenticação: ' + error.message);
+      }
+    }, 0);
+  });
+
+  checkAdmin().then(isAdmin => {
+    if (isAdmin) loadProducts();
+  }).catch(error => {
+    setLoggedIn(false);
+    message('Erro ao verificar acesso: ' + error.message);
+  });
+})();
+</script>
+</body>
+  </html>
