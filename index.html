@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="JNHL Commerce — descubra produtos, compare ofertas e encontre novidades para o seu dia a dia." />
+  <title>JNHL Commerce | Encontre sua próxima escolha</title>
+  <style>
+    :root{--navy:#071426;--panel:#0d2038;--blue:#1688ff;--ice:#eaf3ff;--muted:#9fb0c6;--line:#203651}
+    *{box-sizing:border-box} body{margin:0;background:#071426;color:#f7fbff;font-family:Inter,Segoe UI,Arial,sans-serif}
+    a{color:inherit;text-decoration:none} .wrap{width:min(1160px,92%);margin:auto}
+    header{border-bottom:1px solid var(--line);background:rgba(7,20,38,.96);position:sticky;top:0;z-index:5}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:18px 0}
+    .brand{font-weight:900;letter-spacing:.4px;font-size:1.18rem}.brand span{color:var(--blue)}
+    .navlinks{display:flex;gap:22px;color:#c3d2e5;font-size:.93rem}.navlinks a:hover{color:#fff}
+    .hero{padding:70px 0 54px;background:radial-gradient(ellipse at 80% 20%,#10396b 0,transparent 45%),linear-gradient(135deg,#071426,#0b1e35)}
+    .eyebrow{color:#65b2ff;font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:2px}
+    h1{font-size:clamp(2.4rem,5vw,4.5rem);line-height:1.03;max-width:760px;margin:16px 0}
+    h1 span{color:#55aaff}.hero p{color:#b7c8dc;max-width:600px;font-size:1.08rem;line-height:1.7}
+    .searchbar{display:flex;gap:10px;max-width:640px;margin-top:28px}.searchbar input{flex:1;min-width:0;border:1px solid #294766;border-radius:12px;background:#0d2038;color:white;padding:15px 16px;font-size:1rem;outline:none}
+    .btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:10px;padding:13px 17px;background:var(--blue);color:white;font-weight:800;cursor:pointer}.btn:hover{filter:brightness(1.12)}
+    .section{padding:42px 0}.sectionhead{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:22px}.section h2{font-size:1.7rem;margin:0}.sub{color:var(--muted);margin:8px 0 0}
+    .categories{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}.cat{background:#0d2038;border:1px solid var(--line);border-radius:14px;padding:19px 12px;text-align:center;color:#dceaff;transition:.2s}.cat:hover{border-color:#1688ff;transform:translateY(-2px)}.cat .emoji{font-size:1.6rem;display:block;margin-bottom:9px}.cat span:last-child{font-size:.9rem}
+    .products{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.product{border:1px solid var(--line);border-radius:17px;overflow:hidden;background:#0c1d32;display:flex;flex-direction:column}.product-art{height:185px;display:grid;place-items:center;background:linear-gradient(135deg,#142e4c,#0d2038);font-size:4rem}.product-photo{padding:0;background:#fff;overflow:hidden}.product-photo img{width:100%;height:100%;object-fit:cover;display:block}.product-body{padding:19px;display:flex;flex-direction:column;flex:1}.tag{font-size:.72rem;text-transform:uppercase;letter-spacing:1.2px;color:#72baff;font-weight:800}.product h3{margin:9px 0;font-size:1.1rem}.product p{color:#aebed1;line-height:1.55;font-size:.92rem;flex:1}.product .btn{margin-top:10px;width:100%}.placeholder{border-style:dashed;background:#0a192b}
+    .banner{border:1px solid #21456d;border-radius:18px;padding:28px;background:linear-gradient(115deg,#0e2d50,#0b1b30);display:flex;justify-content:space-between;align-items:center;gap:24px}.banner h2{margin:0 0 8px}.banner p{color:#b7c8dc;margin:0;line-height:1.6}
+    footer{border-top:1px solid var(--line);padding:28px 0;color:#91a5bd;font-size:.85rem;line-height:1.7}.footrow{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
+    .hidden{display:none!important}
+    @media(max-width:850px){.categories{grid-template-columns:repeat(3,1fr)}.products{grid-template-columns:repeat(2,1fr)}.navlinks{gap:12px}}
+    @media(max-width:560px){.nav{align-items:flex-start}.navlinks{display:none}.hero{padding:48px 0 38px}.searchbar{flex-direction:column}.categories{grid-template-columns:repeat(2,1fr)}.products{grid-template-columns:1fr}.product-art{height:150px}.banner{align-items:flex-start;flex-direction:column}}
+  </style>
+</head>
+<body>
+<header><div class="wrap nav">
+  <a class="brand" href="#"><span>JNHL</span> COMMERCE</a>
+  <nav class="navlinks"><a href="#categorias">Categorias</a><a href="#ofertas">Ofertas</a><a href="#sobre">Sobre a loja</a></nav>
+  <a class="btn" href="#ofertas">Explorar ofertas</a>
+</div></header>
+<main>
+  <section class="hero"><div class="wrap">
+    <div class="eyebrow">Escolhas inteligentes para o seu dia a dia</div>
+    <h1>Encontre sua próxima <span>boa escolha.</span></h1>
+    <p>Explore novidades, produtos úteis e ofertas de diferentes categorias em um só lugar. Uma vitrine feita para facilitar sua busca.</p>
+    <div class="searchbar"><input id="search" type="search" placeholder="O que você está procurando?" aria-label="Buscar produtos"><button class="btn" id="searchBtn">Buscar produtos</button></div>
+  </div></section>
+  <section class="section" id="categorias"><div class="wrap">
+    <div class="sectionhead"><div><h2>Explore por categoria</h2><p class="sub">Encontre algo para cada momento.</p></div></div>
+    <div class="categories">
+      <a class="cat" href="#ofertas" data-category="Tecnologia"><span class="emoji">⌁</span><span>Tecnologia</span></a>
+      <a class="cat" href="#ofertas" data-category="Casa e decoração"><span class="emoji">⌂</span><span>Casa e decoração</span></a>
+      <a class="cat" href="#ofertas" data-category="Ferramentas"><span class="emoji">⚒</span><span>Ferramentas</span></a>
+      <a class="cat" href="#ofertas" data-category="Moda e acessórios"><span class="emoji">✦</span><span>Moda e acessórios</span></a>
+      <a class="cat" href="#ofertas" data-category="Beleza e cuidados"><span class="emoji">✧</span><span>Beleza e cuidados</span></a>
+      <a class="cat" href="#ofertas" data-category="Esporte e lazer"><span class="emoji">↗</span><span>Esporte e lazer</span></a>
+    </div>
+  </div></section>
+  <section class="section" id="ofertas"><div class="wrap">
+    <div class="sectionhead"><div><h2>Em destaque</h2><p class="sub">Uma seleção inicial para você explorar.</p></div></div>
+    <div class="products" id="productGrid">
+      <article class="product" data-category="Esporte e lazer" data-name="Cadeira de praia dobrável">
+        <div class="product-art product-photo"><img src="cadeira-praia.png" alt="Cadeira de praia dobrável com listras azuis, verdes e amarelas, fundo branco"></div>
+        <div class="product-body"><span class="tag">Esporte e lazer</span><h3>Cadeira de praia dobrável</h3><p>Uma opção prática para praia, varanda, jardim e momentos ao ar livre. Confira preço, cores e disponibilidade no anúncio.</p><a class="btn" href="https://meli.la/1beXzrq" target="_blank" rel="noopener noreferrer">Ver oferta no Mercado Livre ↗</a></div>
+      </article>
+      <article class="product placeholder" data-category="Tecnologia" data-name="Novidades em tecnologia">
+        <div class="product-art">⌁</div><div class="product-body"><span class="tag">Tecnologia</span><h3>Novidades em tecnologia</h3><p>Este espaço está pronto para receber produtos selecionados desta categoria.</p><a class="btn" href="#sobre">Em breve</a></div>
+      </article>
+      <article class="product placeholder" data-category="Casa e decoração" data-name="Casa e utilidades">
+        <div class="product-art">⌂</div><div class="product-body"><span class="tag">Casa e decoração</span><h3>Casa e utilidades</h3><p>Produtos para deixar a rotina mais prática e os ambientes com a sua cara.</p><a class="btn" href="#sobre">Em breve</a></div>
+      </article>
+    </div>
+    <p id="noResults" class="sub hidden">Nenhum produto encontrado. Tente outro termo.</p>
+  </div></section>
+  <section class="section" id="sobre"><div class="wrap"><div class="banner"><div><h2>Uma vitrine. Muitas possibilidades.</h2><p>A JNHL Commerce reúne produtos de diferentes segmentos para você descobrir novas opções.</p></div><a class="btn" href="#categorias">Ver categorias</a></div></div></section>
+</main>
+<footer><div class="wrap footrow"><div><strong>JNHL Commerce</strong><br>Descubra. Compare. Escolha.</div><div>Os preços, condições e disponibilidade podem mudar e devem ser conferidos no site do vendedor.<br>Alguns links podem gerar comissão para a JNHL Commerce, sem custo adicional ao comprador.</div></div></footer>
+<script>
+ const search = document.getElementById('search');
+ const cards = [...document.querySelectorAll('.product')];
+ const noResults = document.getElementById('noResults');
+ let selectedCategory = '';
+ function filterProducts(){
+   const q = search.value.trim().toLocaleLowerCase('pt-BR');
+   let shown = 0;
+   cards.forEach(card=>{
+     const matchText = (card.dataset.name+' '+card.dataset.category+' '+card.innerText).toLocaleLowerCase('pt-BR').includes(q);
+     const matchCat = !selectedCategory || card.dataset.category === selectedCategory;
+     const visible = matchText && matchCat;
+     card.classList.toggle('hidden', !visible);
+     if(visible) shown++;
+   });
+   noResults.classList.toggle('hidden', shown>0);
+ }
+ document.getElementById('searchBtn').addEventListener('click',filterProducts);
+ search.addEventListener('input',filterProducts);
+ document.querySelectorAll('[data-category]').forEach(link=>link.addEventListener('click',()=>{
+   selectedCategory = link.dataset.category;
+   filterProducts();
+ }));
+</script>
+</body>
+</html>
