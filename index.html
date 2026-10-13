@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="JNHL Commerce — descubra produtos, compare ofertas e encontre novidades para o seu dia a dia.">
+  <meta name="theme-color" content="#071426">
   <title>JNHL Commerce | Encontre sua próxima escolha</title>
 
   <style>
@@ -16,9 +17,7 @@
       --line: #203651;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -27,10 +26,7 @@
       font-family: Inter, "Segoe UI", Arial, sans-serif;
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
+    a { color: inherit; text-decoration: none; }
 
     .wrap {
       width: min(1160px, 92%);
@@ -59,9 +55,7 @@
       font-size: 1.18rem;
     }
 
-    .brand span {
-      color: var(--blue);
-    }
+    .brand span { color: var(--blue); }
 
     .navlinks {
       display: flex;
@@ -70,9 +64,7 @@
       font-size: .93rem;
     }
 
-    .navlinks a:hover {
-      color: #fff;
-    }
+    .navlinks a:hover { color: #fff; }
 
     .hero {
       padding: 70px 0 54px;
@@ -96,9 +88,7 @@
       margin: 16px 0;
     }
 
-    h1 span {
-      color: #55aaff;
-    }
+    h1 span { color: #55aaff; }
 
     .hero p {
       color: #b7c8dc;
@@ -137,15 +127,12 @@
       color: white;
       font-weight: 800;
       cursor: pointer;
+      text-align: center;
     }
 
-    .btn:hover {
-      filter: brightness(1.12);
-    }
+    .btn:hover { filter: brightness(1.12); }
 
-    .section {
-      padding: 42px 0;
-    }
+    .section { padding: 42px 0; }
 
     .sectionhead {
       display: flex;
@@ -163,6 +150,7 @@
     .sub {
       color: var(--muted);
       margin: 8px 0 0;
+      line-height: 1.6;
     }
 
     .categories {
@@ -181,7 +169,7 @@
       transition: .2s;
     }
 
-    .cat:hover {
+    .cat:hover, .cat.selected {
       border-color: var(--blue);
       transform: translateY(-2px);
     }
@@ -192,9 +180,7 @@
       margin-bottom: 9px;
     }
 
-    .cat span:last-child {
-      font-size: .9rem;
-    }
+    .cat span:last-child { font-size: .9rem; }
 
     .products {
       display: grid;
@@ -220,7 +206,6 @@
       font-size: 4rem;
     }
 
-    /* Foto inteira, sem cortar ou deformar */
     .product-photo {
       height: 300px;
       padding: 12px;
@@ -257,6 +242,7 @@
     .product h3 {
       margin: 9px 0;
       font-size: 1.1rem;
+      overflow-wrap: anywhere;
     }
 
     .product p {
@@ -264,17 +250,12 @@
       line-height: 1.55;
       font-size: .92rem;
       flex: 1;
+      overflow-wrap: anywhere;
     }
 
     .product .btn {
       margin-top: 10px;
       width: 100%;
-      text-align: center;
-    }
-
-    .placeholder {
-      border-style: dashed;
-      background: #0a192b;
     }
 
     .banner {
@@ -288,9 +269,7 @@
       gap: 24px;
     }
 
-    .banner h2 {
-      margin: 0 0 8px;
-    }
+    .banner h2 { margin: 0 0 8px; }
 
     .banner p {
       color: #b7c8dc;
@@ -313,57 +292,29 @@
       flex-wrap: wrap;
     }
 
-    .hidden {
-      display: none !important;
+    .hidden { display: none !important; }
+
+    #loadStatus {
+      margin: 0 0 18px;
+      color: var(--muted);
+      line-height: 1.6;
     }
 
     @media (max-width: 850px) {
-      .categories {
-        grid-template-columns: repeat(3, 1fr);
-      }
-
-      .products {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .navlinks {
-        gap: 12px;
-      }
+      .categories { grid-template-columns: repeat(3, 1fr); }
+      .products { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .navlinks { gap: 12px; }
     }
 
     @media (max-width: 560px) {
-      .nav {
-        align-items: flex-start;
-      }
-
-      .navlinks {
-        display: none;
-      }
-
-      .hero {
-        padding: 48px 0 38px;
-      }
-
-      .searchbar {
-        flex-direction: column;
-      }
-
-      .categories {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .products {
-        grid-template-columns: 1fr;
-      }
-
-      .product-art {
-        height: 150px;
-      }
-
-      .product-photo {
-        height: 280px;
-      }
-
+      .nav { align-items: flex-start; }
+      .navlinks { display: none; }
+      .hero { padding: 48px 0 38px; }
+      .searchbar { flex-direction: column; }
+      .categories { grid-template-columns: repeat(2, 1fr); }
+      .products { grid-template-columns: 1fr; }
+      .product-art { height: 150px; }
+      .product-photo { height: 280px; }
       .banner {
         align-items: flex-start;
         flex-direction: column;
@@ -377,7 +328,7 @@
     <div class="wrap nav">
       <a class="brand" href="#"><span>JNHL</span> COMMERCE</a>
 
-      <nav class="navlinks">
+      <nav class="navlinks" aria-label="Navegação principal">
         <a href="#categorias">Categorias</a>
         <a href="#ofertas">Ofertas</a>
         <a href="#sobre">Sobre a loja</a>
@@ -391,7 +342,6 @@
     <section class="hero">
       <div class="wrap">
         <div class="eyebrow">Escolhas inteligentes para o seu dia a dia</div>
-
         <h1>Encontre sua próxima <span>boa escolha.</span></h1>
 
         <p>
@@ -399,15 +349,15 @@
           categorias em um só lugar. Uma vitrine feita para facilitar sua busca.
         </p>
 
-        <div class="searchbar">
+        <form class="searchbar" id="searchForm">
           <input
             id="search"
             type="search"
             placeholder="O que você está procurando?"
             aria-label="Buscar produtos"
           >
-          <button class="btn" id="searchBtn">Buscar produtos</button>
-        </div>
+          <button class="btn" type="submit">Buscar produtos</button>
+        </form>
       </div>
     </section>
 
@@ -422,33 +372,22 @@
 
         <div class="categories">
           <a class="cat" href="#ofertas" data-category="Tecnologia">
-            <span class="emoji">⌁</span>
-            <span>Tecnologia</span>
+            <span class="emoji">⌁</span><span>Tecnologia</span>
           </a>
-
           <a class="cat" href="#ofertas" data-category="Casa e decoração">
-            <span class="emoji">⌂</span>
-            <span>Casa e decoração</span>
+            <span class="emoji">⌂</span><span>Casa e decoração</span>
           </a>
-
           <a class="cat" href="#ofertas" data-category="Ferramentas">
-            <span class="emoji">⚒</span>
-            <span>Ferramentas</span>
+            <span class="emoji">⚒</span><span>Ferramentas</span>
           </a>
-
           <a class="cat" href="#ofertas" data-category="Moda e acessórios">
-            <span class="emoji">✦</span>
-            <span>Moda e acessórios</span>
+            <span class="emoji">✦</span><span>Moda e acessórios</span>
           </a>
-
           <a class="cat" href="#ofertas" data-category="Beleza e cuidados">
-            <span class="emoji">✧</span>
-            <span>Beleza e cuidados</span>
+            <span class="emoji">✧</span><span>Beleza e cuidados</span>
           </a>
-
           <a class="cat" href="#ofertas" data-category="Esporte e lazer">
-            <span class="emoji">↗</span>
-            <span>Esporte e lazer</span>
+            <span class="emoji">↗</span><span>Esporte e lazer</span>
           </a>
         </div>
       </div>
@@ -459,28 +398,214 @@
         <div class="sectionhead">
           <div>
             <h2>Em destaque</h2>
-            <p class="sub">Uma seleção inicial para você explorar.</p>
+            <p class="sub">Produtos selecionados para você explorar.</p>
           </div>
         </div>
 
-        <div class="products" id="productGrid">
-          <article
-            class="product"
-            data-category="Esporte e lazer"
-            data-name="Cadeira de praia dobrável"
-          >
-            <div class="product-art product-photo">
-              <img
-                src="cadeira-praia.png"
-                alt="Cadeira de praia dobrável com listras azuis, verdes e amarelas"
-              >
-            </div>
+        <p id="loadStatus" role="status" aria-live="polite">
+          Carregando produtos...
+        </p>
 
-            <div class="product-body">
-              <span class="tag">Esporte e lazer</span>
-              <h3>Cadeira de praia dobrável</h3>
+        <div class="products" id="productGrid"></div>
 
-              <p>
+        <p id="noResults" class="sub hidden">
+          Nenhum produto encontrado. Tente outro termo ou categoria.
+        </p>
+      </div>
+    </section>
+
+    <section class="section" id="sobre">
+      <div class="wrap">
+        <div class="banner">
+          <div>
+            <h2>Uma vitrine. Muitas possibilidades.</h2>
+            <p>
+              A JNHL Commerce reúne produtos de diferentes segmentos
+              para você descobrir novas opções.
+            </p>
+          </div>
+          <a class="btn" href="#categorias">Ver categorias</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footrow">
+      <div>
+        <strong>JNHL Commerce</strong><br>
+        Descubra. Compare. Escolha.
+      </div>
+      <div>
+        Os preços, condições e disponibilidade podem mudar e devem ser conferidos no site do vendedor.<br>
+        Alguns links podem gerar comissão para a JNHL Commerce, sem custo adicional ao comprador.
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    (() => {
+      'use strict';
+
+      const SUPABASE_URL = 'https://irtqenyuevxfuenuqcqq.supabase.co';
+      const SUPABASE_KEY = 'sb_publishable_rVnd_c4Pb7ZBSsAY3xX9WQ_EieuPSeR';
+
+      const grid = document.getElementById('productGrid');
+      const search = document.getElementById('search');
+      const searchForm = document.getElementById('searchForm');
+      const status = document.getElementById('loadStatus');
+      const noResults = document.getElementById('noResults');
+      const categoryLinks = [...document.querySelectorAll('[data-category]')];
+
+      let supabaseClient;
+      let products = [];
+      let selectedCategory = '';
+
+      function textElement(tag, text, className) {
+        const el = document.createElement(tag);
+        el.textContent = text || '';
+        if (className) el.className = className;
+        return el;
+      }
+
+      function safeHttpUrl(value) {
+        if (!value || typeof value !== 'string') return '';
+        try {
+          const url = new URL(value, window.location.href);
+          return ['https:', 'http:'].includes(url.protocol) ? url.href : '';
+        } catch {
+          return '';
+        }
+      }
+
+      function renderProducts() {
+        const query = search.value.trim().toLocaleLowerCase('pt-BR');
+
+        const visibleProducts = products.filter(product => {
+          const searchable = [
+            product.name,
+            product.description,
+            product.category
+          ].join(' ').toLocaleLowerCase('pt-BR');
+
+          return searchable.includes(query) &&
+            (!selectedCategory || product.category === selectedCategory);
+        });
+
+        grid.replaceChildren();
+
+        visibleProducts.forEach(product => {
+          const card = textElement('article', '', 'product');
+
+          const imageUrl = safeHttpUrl(product.image_url);
+          if (imageUrl) {
+            const photo = textElement('div', '', 'product-art product-photo');
+            const image = document.createElement('img');
+            image.src = imageUrl;
+            image.alt = product.name || 'Foto do produto';
+            image.loading = 'lazy';
+            image.onerror = () => {
+              photo.replaceChildren(textElement('span', '🛍️'));
+            };
+            photo.appendChild(image);
+            card.appendChild(photo);
+          } else {
+            card.appendChild(textElement('div', '🛍️', 'product-art'));
+          }
+
+          const body = textElement('div', '', 'product-body');
+          body.appendChild(textElement('span', product.category || 'Geral', 'tag'));
+          body.appendChild(textElement('h3', product.name || 'Produto'));
+          body.appendChild(textElement('p', product.description || 'Confira os detalhes no anúncio do vendedor.'));
+
+          const affiliateUrl = safeHttpUrl(product.affiliate_url);
+          if (affiliateUrl) {
+            const link = textElement('a', 'Ver oferta ↗', 'btn');
+            link.href = affiliateUrl;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer sponsored';
+            body.appendChild(link);
+          }
+
+          card.appendChild(body);
+          grid.appendChild(card);
+        });
+
+        noResults.classList.toggle('hidden', visibleProducts.length > 0);
+      }
+
+      async function loadProducts() {
+        status.textContent = 'Carregando produtos...';
+        noResults.classList.add('hidden');
+        grid.replaceChildren();
+
+        try {
+          if (!window.supabase) {
+            throw new Error('A biblioteca de conexão não carregou. Atualize a página e tente novamente.');
+          }
+
+          if (!supabaseClient) {
+            supabaseClient = window.supabase.createClient(
+              SUPABASE_URL,
+              SUPABASE_KEY
+            );
+          }
+
+          const { data, error } = await supabaseClient
+            .from('products')
+            .select('id, name, description, category, image_url, affiliate_url, active, created_at')
+            .eq('active', true)
+            .order('created_at', { ascending: false });
+
+          if (error) throw error;
+
+          products = data || [];
+          renderProducts();
+
+          status.textContent = products.length
+            ? ''
+            : 'Ainda não há produtos ativos. Cadastre um produto no painel administrativo.';
+          status.classList.toggle('hidden', products.length > 0);
+        } catch (error) {
+          products = [];
+          grid.replaceChildren();
+          status.classList.remove('hidden');
+          status.textContent =
+            'Não foi possível carregar os produtos. Verifique a conexão com o banco e as permissões do Supabase.';
+          console.error('Erro ao carregar produtos:', error);
+        }
+      }
+
+      search.addEventListener('input', renderProducts);
+      searchForm.addEventListener('submit', event => {
+        event.preventDefault();
+        renderProducts();
+        document.getElementById('ofertas').scrollIntoView({ behavior: 'smooth' });
+      });
+
+      categoryLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          selectedCategory = selectedCategory === link.dataset.category
+            ? ''
+            : link.dataset.category;
+
+          categoryLinks.forEach(item => {
+            const selected = item.dataset.category === selectedCategory;
+            item.classList.toggle('selected', selected);
+            if (selected) item.setAttribute('aria-current', 'true');
+            else item.removeAttribute('aria-current');
+          });
+
+          renderProducts();
+        });
+      });
+
+      loadProducts();
+    })();
+  </script>
+</body>
+</html>              <p>
                 Uma opção prática para praia, varanda, jardim e momentos
                 ao ar livre. Confira preço, cores e disponibilidade no anúncio.
               </p>
