@@ -12,7 +12,7 @@
     body{margin:0;background:var(--navy);color:#f7fbff;font-family:Inter,"Segoe UI",Arial,sans-serif}
     a{color:inherit;text-decoration:none}
     .wrap{width:min(1160px,92%);margin:auto}
-    header{border-bottom:1px solid var(--line);background:rgba(7,20,38,.96);position:sticky;top:0;z-index:5}
+    header{border-bottom:1px solid var(--line);background:rgba(7,20,38,.98);position:relative;z-index:5}
     .nav{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:18px 0}
     .brand{font-weight:900;letter-spacing:.4px;font-size:1.18rem}.brand span{color:var(--blue)}
     .navlinks{display:flex;gap:22px;color:#c3d2e5;font-size:.93rem}
@@ -48,7 +48,7 @@
 
     /* Visual renovado JNHL Commerce */
     body{background:radial-gradient(ellipse at 50% -10%,#143e6d 0,transparent 45%),var(--navy)}
-    header{backdrop-filter:blur(16px);box-shadow:0 8px 30px #0003}
+    header{backdrop-filter:none;box-shadow:0 5px 18px #0002}
     .brand{display:inline-flex;align-items:center;gap:9px;font-size:1.08rem;letter-spacing:.8px;min-width:0}\n    .brand-logo{display:block;width:clamp(110px,16vw,180px);height:auto;max-height:72px;object-fit:contain;border-radius:8px}\n    @media(max-width:560px){.brand-logo{width:clamp(95px,28vw,135px);max-height:58px}}
     .brand:before{display:none}
     .hero{position:relative;overflow:hidden;padding:clamp(64px,9vw,112px) 0 82px;background:radial-gradient(ellipse at 78% 20%,#1769b755 0,transparent 36%),linear-gradient(135deg,#071426 0%,#0b2341 55%,#071426 100%)}
@@ -149,7 +149,27 @@
     .brand{align-items:center !important;gap:14px !important}
     @media(max-width:560px){.brand-logo{width:68px !important;height:68px !important}.brand{gap:9px !important}}
 
-</style>
+
+    /* Cabeçalho mais leve: sem faixa fixa cobrindo o conteúdo ao rolar */
+    header .top-social{min-height:0; padding:8px 0 !important}
+    header .nav{min-height:72px; padding:9px 0 !important; gap:18px}
+    .navlinks{display:flex;align-items:center;gap:8px;color:#d7e8fb;font-size:.9rem}
+    .navlinks a{display:inline-flex;align-items:center;padding:10px 12px;border:1px solid transparent;border-radius:10px;transition:background .2s,border-color .2s,color .2s}
+    .navlinks a:hover{background:#102944;border-color:#294766;color:#fff}
+    @media(max-width:850px){
+      header .nav{gap:10px}
+      .navlinks{gap:3px;font-size:.82rem}
+      .navlinks a{padding:9px 8px}
+    }
+    @media(max-width:560px){
+      header .nav{min-height:66px;gap:8px}
+      .navlinks{display:flex;gap:5px;max-width:52vw;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
+      .navlinks::-webkit-scrollbar{display:none}
+      .navlinks a{padding:8px 9px;font-size:.78rem;background:#0d2038;border-color:#203651}
+      header .top-social{padding:6px 0 !important}
+    }
+
+  </style>
 </head>
 <body>
   <header><div class="wrap top-social" aria-label="Redes sociais da JNHL Commerce">
