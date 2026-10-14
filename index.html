@@ -1,4 +1,4 @@
-
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -17,7 +17,9 @@
       --line: #203651;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
@@ -26,7 +28,10 @@
       font-family: Inter, "Segoe UI", Arial, sans-serif;
     }
 
-    a { color: inherit; text-decoration: none; }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
     .wrap {
       width: min(1160px, 92%);
@@ -55,7 +60,9 @@
       font-size: 1.18rem;
     }
 
-    .brand span { color: var(--blue); }
+    .brand span {
+      color: var(--blue);
+    }
 
     .navlinks {
       display: flex;
@@ -63,8 +70,6 @@
       color: #c3d2e5;
       font-size: .93rem;
     }
-
-    .navlinks a:hover { color: #fff; }
 
     .hero {
       padding: 70px 0 54px;
@@ -88,7 +93,9 @@
       margin: 16px 0;
     }
 
-    h1 span { color: #55aaff; }
+    h1 span {
+      color: #55aaff;
+    }
 
     .hero p {
       color: #b7c8dc;
@@ -130,9 +137,13 @@
       text-align: center;
     }
 
-    .btn:hover { filter: brightness(1.12); }
+    .btn:hover {
+      filter: brightness(1.12);
+    }
 
-    .section { padding: 42px 0; }
+    .section {
+      padding: 42px 0;
+    }
 
     .sectionhead {
       display: flex;
@@ -169,7 +180,8 @@
       transition: .2s;
     }
 
-    .cat:hover, .cat.selected {
+    .cat:hover,
+    .cat.selected {
       border-color: var(--blue);
       transform: translateY(-2px);
     }
@@ -180,7 +192,9 @@
       margin-bottom: 9px;
     }
 
-    .cat span:last-child { font-size: .9rem; }
+    .cat span:last-child {
+      font-size: .9rem;
+    }
 
     .products {
       display: grid;
@@ -245,6 +259,13 @@
       overflow-wrap: anywhere;
     }
 
+    .product-price {
+      color: #55aaff;
+      font-size: 1.5rem;
+      font-weight: 900;
+      margin: 5px 0 10px;
+    }
+
     .product p {
       color: #aebed1;
       line-height: 1.55;
@@ -269,7 +290,9 @@
       gap: 24px;
     }
 
-    .banner h2 { margin: 0 0 8px; }
+    .banner h2 {
+      margin: 0 0 8px;
+    }
 
     .banner p {
       color: #b7c8dc;
@@ -292,7 +315,9 @@
       flex-wrap: wrap;
     }
 
-    .hidden { display: none !important; }
+    .hidden {
+      display: none !important;
+    }
 
     #loadStatus {
       margin: 0 0 18px;
@@ -301,20 +326,52 @@
     }
 
     @media (max-width: 850px) {
-      .categories { grid-template-columns: repeat(3, 1fr); }
-      .products { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .navlinks { gap: 12px; }
+      .categories {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .products {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .navlinks {
+        gap: 12px;
+      }
     }
 
     @media (max-width: 560px) {
-      .nav { align-items: flex-start; }
-      .navlinks { display: none; }
-      .hero { padding: 48px 0 38px; }
-      .searchbar { flex-direction: column; }
-      .categories { grid-template-columns: repeat(2, 1fr); }
-      .products { grid-template-columns: 1fr; }
-      .product-art { height: 150px; }
-      .product-photo { height: 280px; }
+      .nav {
+        align-items: flex-start;
+      }
+
+      .navlinks {
+        display: none;
+      }
+
+      .hero {
+        padding: 48px 0 38px;
+      }
+
+      .searchbar {
+        flex-direction: column;
+      }
+
+      .categories {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .products {
+        grid-template-columns: 1fr;
+      }
+
+      .product-art {
+        height: 150px;
+      }
+
+      .product-photo {
+        height: 280px;
+      }
+
       .banner {
         align-items: flex-start;
         flex-direction: column;
@@ -326,7 +383,9 @@
 <body>
   <header>
     <div class="wrap nav">
-      <a class="brand" href="#"><span>JNHL</span> COMMERCE</a>
+      <a class="brand" href="#">
+        <span>JNHL</span> COMMERCE
+      </a>
 
       <nav class="navlinks" aria-label="Navegação principal">
         <a href="#categorias">Categorias</a>
@@ -341,8 +400,13 @@
   <main>
     <section class="hero">
       <div class="wrap">
-        <div class="eyebrow">Escolhas inteligentes para o seu dia a dia</div>
-        <h1>Encontre sua próxima <span>boa escolha.</span></h1>
+        <div class="eyebrow">
+          Escolhas inteligentes para o seu dia a dia
+        </div>
+
+        <h1>
+          Encontre sua próxima <span>boa escolha.</span>
+        </h1>
 
         <p>
           Explore novidades, produtos úteis e ofertas de diferentes
@@ -372,22 +436,33 @@
 
         <div class="categories">
           <a class="cat" href="#ofertas" data-category="Tecnologia">
-            <span class="emoji">⌁</span><span>Tecnologia</span>
+            <span class="emoji">⌁</span>
+            <span>Tecnologia</span>
           </a>
+
           <a class="cat" href="#ofertas" data-category="Casa e decoração">
-            <span class="emoji">⌂</span><span>Casa e decoração</span>
+            <span class="emoji">⌂</span>
+            <span>Casa e decoração</span>
           </a>
+
           <a class="cat" href="#ofertas" data-category="Ferramentas">
-            <span class="emoji">⚒</span><span>Ferramentas</span>
+            <span class="emoji">⚒</span>
+            <span>Ferramentas</span>
           </a>
+
           <a class="cat" href="#ofertas" data-category="Moda e acessórios">
-            <span class="emoji">✦</span><span>Moda e acessórios</span>
+            <span class="emoji">✦</span>
+            <span>Moda e acessórios</span>
           </a>
+
           <a class="cat" href="#ofertas" data-category="Beleza e cuidados">
-            <span class="emoji">✧</span><span>Beleza e cuidados</span>
+            <span class="emoji">✧</span>
+            <span>Beleza e cuidados</span>
           </a>
+
           <a class="cat" href="#ofertas" data-category="Esporte e lazer">
-            <span class="emoji">↗</span><span>Esporte e lazer</span>
+            <span class="emoji">↗</span>
+            <span>Esporte e lazer</span>
           </a>
         </div>
       </div>
@@ -398,7 +473,9 @@
         <div class="sectionhead">
           <div>
             <h2>Em destaque</h2>
-            <p class="sub">Produtos selecionados para você explorar.</p>
+            <p class="sub">
+              Produtos selecionados para você explorar.
+            </p>
           </div>
         </div>
 
@@ -424,10 +501,324 @@
               para você descobrir novas opções.
             </p>
           </div>
+
           <a class="btn" href="#categorias">Ver categorias</a>
         </div>
       </div>
     </section>
+  </main>
+
+  <footer>
+    <div class="wrap footrow">
+      <div>
+        <strong>JNHL Commerce</strong><br>
+        Descubra. Compare. Escolha.
+      </div>
+
+      <div>
+        Os preços, condições e disponibilidade podem mudar e devem
+        ser conferidos no site do vendedor.<br>
+        Alguns links podem gerar comissão para a JNHL Commerce,
+        sem custo adicional ao comprador.
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    (() => {
+      'use strict';
+
+      const SUPABASE_URL =
+        'https://irtqenyuevxfuenuqcqq.supabase.co';
+
+      const SUPABASE_KEY =
+        'sb_publishable_rVnd_c4Pb7ZBSsAY3xX9WQ_EieuPSeR';
+
+      const grid = document.getElementById('productGrid');
+      const search = document.getElementById('search');
+      const searchForm = document.getElementById('searchForm');
+      const status = document.getElementById('loadStatus');
+      const noResults = document.getElementById('noResults');
+
+      const categoryLinks = [
+        ...document.querySelectorAll('[data-category]')
+      ];
+
+      let supabaseClient;
+      let products = [];
+      let selectedCategory = '';
+
+      function textElement(tag, text, className) {
+        const el = document.createElement(tag);
+        el.textContent = text || '';
+
+        if (className) {
+          el.className = className;
+        }
+
+        return el;
+      }
+
+      function safeHttpUrl(value) {
+        if (!value || typeof value !== 'string') {
+          return '';
+        }
+
+        try {
+          const url = new URL(value, window.location.href);
+
+          return ['https:', 'http:'].includes(url.protocol)
+            ? url.href
+            : '';
+        } catch {
+          return '';
+        }
+      }
+
+      function formatPrice(value) {
+        if (
+          value === null ||
+          value === undefined ||
+          String(value).trim() === ''
+        ) {
+          return '';
+        }
+
+        const price = Number(value);
+
+        if (!Number.isFinite(price) || price < 0) {
+          return '';
+        }
+
+        return price.toLocaleString('pt-BR', {
+          style: 'currency',
+          currency: 'BRL'
+        });
+      }
+
+      function renderProducts() {
+        const query = search.value
+          .trim()
+          .toLocaleLowerCase('pt-BR');
+
+        const visibleProducts = products.filter(product => {
+          const searchable = [
+            product.name,
+            product.description,
+            product.category
+          ]
+            .join(' ')
+            .toLocaleLowerCase('pt-BR');
+
+          const matchesText = searchable.includes(query);
+
+          const matchesCategory =
+            !selectedCategory ||
+            product.category === selectedCategory;
+
+          return matchesText && matchesCategory;
+        });
+
+        grid.replaceChildren();
+
+        visibleProducts.forEach(product => {
+          const card = textElement('article', '', 'product');
+
+          const imageUrl = safeHttpUrl(product.image_url);
+
+          if (imageUrl) {
+            const photo = textElement(
+              'div',
+              '',
+              'product-art product-photo'
+            );
+
+            const image = document.createElement('img');
+
+            image.src = imageUrl;
+            image.alt = product.name || 'Foto do produto';
+            image.loading = 'lazy';
+
+            image.onerror = () => {
+              photo.replaceChildren(
+                textElement('span', '🛍️')
+              );
+            };
+
+            photo.appendChild(image);
+            card.appendChild(photo);
+          } else {
+            card.appendChild(
+              textElement('div', '🛍️', 'product-art')
+            );
+          }
+
+          const body = textElement('div', '', 'product-body');
+
+          body.appendChild(
+            textElement(
+              'span',
+              product.category || 'Geral',
+              'tag'
+            )
+          );
+
+          body.appendChild(
+            textElement('h3', product.name || 'Produto')
+          );
+
+          // Exibe o preço cadastrado no Supabase.
+          const formattedPrice = formatPrice(product.price);
+
+          if (formattedPrice) {
+            body.appendChild(
+              textElement(
+                'div',
+                formattedPrice,
+                'product-price'
+              )
+            );
+          }
+
+          body.appendChild(
+            textElement(
+              'p',
+              product.description ||
+                'Confira os detalhes no anúncio do vendedor.'
+            )
+          );
+
+          const affiliateUrl = safeHttpUrl(product.affiliate_url);
+
+          if (affiliateUrl) {
+            const link = textElement(
+              'a',
+              'Ver oferta ↗',
+              'btn'
+            );
+
+            link.href = affiliateUrl;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer sponsored';
+
+            body.appendChild(link);
+          }
+
+          card.appendChild(body);
+          grid.appendChild(card);
+        });
+
+        noResults.classList.toggle(
+          'hidden',
+          visibleProducts.length > 0
+        );
+      }
+
+      async function loadProducts() {
+        status.classList.remove('hidden');
+        status.textContent = 'Carregando produtos...';
+
+        noResults.classList.add('hidden');
+        grid.replaceChildren();
+
+        try {
+          if (!window.supabase) {
+            throw new Error(
+              'A biblioteca do Supabase não carregou.'
+            );
+          }
+
+          if (!supabaseClient) {
+            supabaseClient = window.supabase.createClient(
+              SUPABASE_URL,
+              SUPABASE_KEY
+            );
+          }
+
+          const { data, error } = await supabaseClient
+            .from('products')
+            .select(
+              'id, name, description, category, image_url, price, affiliate_url, active, created_at'
+            )
+            .eq('active', true)
+            .order('created_at', { ascending: false });
+
+          if (error) {
+            throw error;
+          }
+
+          products = data || [];
+
+          renderProducts();
+
+          if (products.length > 0) {
+            status.textContent = '';
+            status.classList.add('hidden');
+          } else {
+            status.textContent =
+              'Ainda não há produtos ativos. Cadastre ou ative um produto no painel administrativo.';
+          }
+        } catch (error) {
+          products = [];
+          grid.replaceChildren();
+
+          status.classList.remove('hidden');
+          status.textContent =
+            'Não foi possível carregar os produtos. Verifique a conexão com o Supabase e as permissões do banco.';
+
+          console.error(
+            'Erro ao carregar produtos:',
+            error
+          );
+        }
+      }
+
+      search.addEventListener('input', renderProducts);
+
+      searchForm.addEventListener('submit', event => {
+        event.preventDefault();
+        renderProducts();
+
+        document
+          .getElementById('ofertas')
+          .scrollIntoView({ behavior: 'smooth' });
+      });
+
+      categoryLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          const clickedCategory = link.dataset.category;
+
+          selectedCategory =
+            selectedCategory === clickedCategory
+              ? ''
+              : clickedCategory;
+
+          categoryLinks.forEach(item => {
+            const selected =
+              item.dataset.category === selectedCategory;
+
+            item.classList.toggle('selected', selected);
+
+            if (selected) {
+              item.setAttribute('aria-current', 'true');
+            } else {
+              item.removeAttribute('aria-current');
+            }
+          });
+
+          renderProducts();
+        });
+      });
+
+      loadProducts();
+    })();
+  </script>
+</body>
+</html>
+```
+
   </main>
 
   <footer>
