@@ -45,10 +45,77 @@
     #loadStatus{margin:0 0 18px;color:var(--muted);line-height:1.6}
     @media(max-width:850px){.categories{grid-template-columns:repeat(3,1fr)}.products{grid-template-columns:repeat(2,minmax(0,1fr))}.navlinks{gap:12px}}
     @media(max-width:560px){.nav{align-items:flex-start}.navlinks{display:none}.hero{padding:48px 0 38px}.searchbar{flex-direction:column}.categories{grid-template-columns:repeat(2,1fr)}.products{grid-template-columns:1fr}.product-art{height:150px}.product-photo{height:280px}.banner{align-items:flex-start;flex-direction:column}}
+
+    /* Visual renovado JNHL Commerce */
+    body{background:radial-gradient(ellipse at 50% -10%,#143e6d 0,transparent 45%),var(--navy)}
+    header{backdrop-filter:blur(16px);box-shadow:0 8px 30px #0003}
+    .brand{display:inline-flex;align-items:center;gap:9px;font-size:1.08rem;letter-spacing:.8px}
+    .brand:before{content:"J";display:grid;place-items:center;width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,#49b4ff,#1264e8);color:white;box-shadow:0 0 24px #1688ff55;font-weight:1000}
+    .hero{position:relative;overflow:hidden;padding:clamp(64px,9vw,112px) 0 82px;background:radial-gradient(ellipse at 78% 20%,#1769b755 0,transparent 36%),linear-gradient(135deg,#071426 0%,#0b2341 55%,#071426 100%)}
+    .hero:after{content:"";position:absolute;width:340px;height:340px;right:-100px;bottom:-190px;border:1px solid #55aaff33;border-radius:50%;box-shadow:0 0 0 35px #55aaff08,0 0 0 70px #55aaff06;pointer-events:none}
+    .eyebrow{display:inline-flex;padding:9px 13px;border:1px solid #55aaff44;background:#1688ff14;border-radius:999px;letter-spacing:1.3px}
+    h1{letter-spacing:-2px;text-shadow:0 8px 38px #0005}
+    .hero p{font-size:1.12rem}
+    .searchbar input:focus{border-color:#55aaff;box-shadow:0 0 0 4px #1688ff20}
+    .btn{background:linear-gradient(135deg,#36a5ff,#1268ee);box-shadow:0 8px 24px #1688ff30;transition:transform .2s,box-shadow .2s}
+    .btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px #1688ff50}
+    .sectionhead{margin-bottom:26px}
+    .section h2{letter-spacing:-.5px}
+    .cat{background:linear-gradient(145deg,#102944,#0b1a2c);transition:transform .22s,border-color .22s,box-shadow .22s}
+    .cat:hover,.cat.selected{box-shadow:0 12px 28px #0003}
+    .product{box-shadow:0 10px 28px #0002;transition:transform .22s,border-color .22s,box-shadow .22s}
+    .product:hover{transform:translateY(-5px);border-color:#277bc4;box-shadow:0 18px 38px #0004}
+    .product-photo{background:linear-gradient(145deg,#fff,#eaf3fc)}
+    .product-price{letter-spacing:-.5px}
+    .banner{position:relative;overflow:hidden;background:radial-gradient(ellipse at 100% 0,#1688ff33,transparent 55%),linear-gradient(120deg,#102f52,#0b1b30);box-shadow:0 18px 45px #0002}
+    footer{background:#06101e}
+    .social-links{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin-top:13px}
+    .social-links a{display:inline-flex;align-items:center;gap:7px;padding:8px 10px;border:1px solid #294766;border-radius:10px;background:#0b1d32;color:#dcecff;font-size:.82rem;font-weight:700;transition:background .2s,border-color .2s,transform .2s}
+    .social-links a:hover{background:#123052;border-color:#55aaff;transform:translateY(-2px)}
+    .social-links svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+    /* Redes sociais no topo com ícones reconhecíveis */
+    .top-social{display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:9px 0 0}
+    .top-social a{width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;border-radius:10px;background:#102944;border:1px solid #294766;transition:transform .2s,background .2s}
+    .top-social a:hover{transform:translateY(-2px);background:#173a60}
+    .top-social svg{width:21px;height:21px;display:block;fill:currentColor;stroke:none}
+    .top-social .instagram{color:#ff70a6}
+    .top-social .tiktok{color:#ffffff;filter:drop-shadow(1px 0 #25f4ee) drop-shadow(-1px 0 #fe2c55)}
+    .top-social .facebook{color:#1877f2}
+    @media(max-width:560px){.top-social{justify-content:center;padding:8px 0 0}.top-social a{width:32px;height:32px}.nav{padding-top:10px}}
+    /* Atendimento flutuante */
+    .help-launcher{position:fixed;right:18px;bottom:18px;z-index:20;display:flex;align-items:center;gap:7px;border:1px solid #75c4ff66;border-radius:999px;padding:6px 12px 6px 6px;background:linear-gradient(135deg,#1688ff,#0757c9);color:white;box-shadow:0 8px 24px #0006;cursor:pointer;font:inherit;font-size:.82rem;font-weight:800;transition:transform .2s}
+    .help-launcher:hover{transform:translateY(-3px)}
+    .help-logo{width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:#fff;color:#0875df;font-weight:1000;font-size:.85rem;box-shadow:inset 0 0 0 2px #c5e6ff;flex-shrink:0}
+    .help-panel{position:fixed;right:18px;bottom:64px;z-index:21;width:min(270px,calc(100vw - 28px));max-height:min(58vh,420px);overflow-y:auto;border:1px solid #2c5278;border-radius:14px;overflow-x:hidden;background:#0b1d32;color:#f7fbff;box-shadow:0 18px 48px #0009}
+    .help-panel[hidden]{display:none}
+    .help-head{display:flex;align-items:center;gap:8px;padding:9px 10px;background:linear-gradient(120deg,#1268c9,#0c2a4b)}
+    .help-head strong{display:block}.help-head small{display:block;color:#d5eaff;margin-top:3px}
+    .help-close{margin-left:auto;border:0;background:#ffffff1b;color:white;font-size:1.2rem;border-radius:8px;width:30px;height:30px;cursor:pointer}
+    .help-content{padding:10px}
+    .help-bubble{padding:8px 9px;border-radius:12px 12px 12px 4px;background:#142e49;color:#e5f2ff;line-height:1.45;font-size:.84rem}
+    .help-options{display:grid;gap:6px;margin-top:8px}
+    .help-option{padding:7px 8px;font-size:.8rem;text-align:left;border:1px solid #2c5278;border-radius:9px;background:#0d243c;color:#eaf5ff;cursor:pointer;font:inherit}
+    .help-option:hover{border-color:#55aaff;background:#123052}
+    .help-answer{margin-top:8px;padding:8px;border:1px solid #244b70;border-radius:10px;color:#c6d9ed;line-height:1.45;font-size:.82rem}
+    .help-whatsapp{display:block;margin-top:8px;text-align:center;text-decoration:none;border-radius:9px;padding:9px;background:#16a765;color:white;font-weight:800;font-size:.83rem}
+    .help-note{margin:8px 0 0;color:#90a8c1;font-size:.7rem;line-height:1.4}
+    @media(max-width:560px){.help-launcher{right:10px;bottom:10px;padding:5px 9px 5px 5px;font-size:.78rem}.help-logo{width:28px;height:28px}.help-panel{right:10px;bottom:56px;width:min(270px,calc(100vw - 20px));max-height:58vh}.brand{font-size:.95rem}h1{letter-spacing:-1px}}
+
   </style>
 </head>
 <body>
-  <header><div class="wrap nav">
+  <header><div class="wrap top-social" aria-label="Redes sociais da JNHL Commerce">
+    <a class="instagram" href="https://www.instagram.com/jnhlcommerce018/" target="_blank" rel="noopener noreferrer" aria-label="Instagram da JNHL Commerce" title="Instagram">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.2 2h9.6A5.2 5.2 0 0 1 22 7.2v9.6a5.2 5.2 0 0 1-5.2 5.2H7.2A5.2 5.2 0 0 1 2 16.8V7.2A5.2 5.2 0 0 1 7.2 2zm0 2A3.2 3.2 0 0 0 4 7.2v9.6A3.2 3.2 0 0 0 7.2 20h9.6a3.2 3.2 0 0 0 3.2-3.2V7.2A3.2 3.2 0 0 0 16.8 4H7.2zm4.8 3a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm5.2-3.5a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4z"/></svg>
+    </a>
+    <a class="tiktok" href="https://www.tiktok.com/@jnhl.commerce?is_from_webapp=1&amp;sender_device=pc" target="_blank" rel="noopener noreferrer" aria-label="TikTok da JNHL Commerce" title="TikTok">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.6 7.1a6.8 6.8 0 0 1-4.2-1.5v8.1a6.1 6.1 0 1 1-5.3-6.05v3.3a2.9 2.9 0 1 0 2 2.75V2h3.3c.2 2.1 1.8 3.8 4.2 4.1v1z"/></svg>
+    </a>
+    <a class="facebook" href="https://www.facebook.com/profile.php?id=61595474096164" target="_blank" rel="noopener noreferrer" aria-label="Facebook da JNHL Commerce" title="Facebook">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.2 10.13 24v-8.44H7.08v-3.49h3.05V9.4c0-3.03 1.79-4.71 4.53-4.71 1.31 0 2.68.24 2.68.24v2.96h-1.51c-1.49 0-1.95.93-1.95 1.88v2.3h3.32l-.53 3.49h-2.79V24C19.61 23.2 24 18.1 24 12.07z"/></svg>
+    </a>
+  </div><div class="wrap nav">
     <a class="brand" href="#"><span>JNHL</span> COMMERCE</a>
     <nav class="navlinks" aria-label="Navegação principal">
       <a href="#categorias">Categorias</a><a href="#ofertas">Ofertas</a><a href="#sobre">Sobre a loja</a>
@@ -88,7 +155,8 @@
     </div></div></section>
   </main>
   <footer><div class="wrap footrow">
-    <div><strong>JNHL Commerce</strong><br>Descubra. Compare. Escolha.</div>
+    <div><strong>JNHL Commerce</strong><br>Descubra. Compare. Escolha.
+    </div>
     <div>Os preços, condições e disponibilidade podem mudar e devem ser conferidos no site do vendedor.<br>Alguns links podem gerar comissão para a JNHL Commerce, sem custo adicional ao comprador.</div>
   </div></footer>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -227,635 +295,72 @@
       loadProducts();
     })();
   </script>
-</body>
-</html>contrado. Tente outro termo ou categoria.
-        </p>
-      </div>
-    </section>
 
-    <section class="section" id="sobre">
-      <div class="wrap">
-        <div class="banner">
-          <div>
-            <h2>Uma vitrine. Muitas possibilidades.</h2>
-            <p>
-              A JNHL Commerce reúne produtos de diferentes segmentos
-              para você descobrir novas opções.
-            </p>
-          </div>
-
-          <a class="btn" href="#categorias">Ver categorias</a>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="wrap footrow">
-      <div>
-        <strong>JNHL Commerce</strong><br>
-        Descubra. Compare. Escolha.
-      </div>
-
-      <div>
-        Os preços, condições e disponibilidade podem mudar e devem
-        ser conferidos no site do vendedor.<br>
-        Alguns links podem gerar comissão para a JNHL Commerce,
-        sem custo adicional ao comprador.
-      </div>
+  <button class="help-launcher" id="helpLauncher" type="button" aria-expanded="false" aria-controls="helpPanel">
+    <span class="help-logo">J</span><span>💬 Tire sua dúvida</span>
+  </button>
+  <section class="help-panel" id="helpPanel" aria-label="Atendimento JNHL Commerce" hidden>
+    <div class="help-head">
+      <span class="help-logo">J</span>
+      <div><strong>Atendimento JNHL</strong><small>Como podemos ajudar?</small></div>
+      <button class="help-close" id="helpClose" type="button" aria-label="Fechar atendimento">×</button>
     </div>
-  </footer>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+    <div class="help-content">
+      <div class="help-bubble">Olá! 👋 Seja bem-vindo à JNHL Commerce. Escolha uma opção e vamos ajudar você.</div>
+      <div class="help-options">
+        <button class="help-option" type="button" data-help="produto">🛍️ Quero saber sobre um produto</button>
+        <button class="help-option" type="button" data-help="preco">💰 O preço está atualizado?</button>
+        <button class="help-option" type="button" data-help="compra">🔗 Como faço para comprar?</button>
+        <button class="help-option" type="button" data-help="pessoa">🙋 Quero falar com uma pessoa</button>
+      </div>
+      <div class="help-answer" id="helpAnswer" aria-live="polite" hidden></div>
+      <a class="help-whatsapp" id="helpWhatsapp" href="#" target="_blank" rel="noopener noreferrer" hidden>Conversar pelo WhatsApp ↗</a>
+      <p class="help-note">A JNHL Commerce é uma vitrine de ofertas. A compra e o pagamento são feitos no site do vendedor.</p>
+    </div>
+  </section>
   <script>
     (() => {
-      'use strict';
-
-      const SUPABASE_URL =
-        'https://irtqenyuevxfuenuqcqq.supabase.co';
-
-      const SUPABASE_KEY =
-        'sb_publishable_rVnd_c4Pb7ZBSsAY3xX9WQ_EieuPSeR';
-
-      const grid = document.getElementById('productGrid');
-      const search = document.getElementById('search');
-      const searchForm = document.getElementById('searchForm');
-      const status = document.getElementById('loadStatus');
-      const noResults = document.getElementById('noResults');
-
-      const categoryLinks = [
-        ...document.querySelectorAll('[data-category]')
-      ];
-
-      let supabaseClient;
-      let products = [];
-      let selectedCategory = '';
-
-      function textElement(tag, text, className) {
-        const el = document.createElement(tag);
-        el.textContent = text || '';
-
-        if (className) {
-          el.className = className;
-        }
-
-        return el;
+      // IMPORTANTE: adicione o WhatsApp comercial com DDI e DDD, somente números.
+      // Exemplo de formato: 5511999999999 (não use esse número de exemplo).
+      const WHATSAPP_COMERCIAL = '';
+      const launcher = document.getElementById('helpLauncher');
+      const panel = document.getElementById('helpPanel');
+      const close = document.getElementById('helpClose');
+      const answer = document.getElementById('helpAnswer');
+      const whatsapp = document.getElementById('helpWhatsapp');
+      function openHelp() {
+        panel.hidden = false;
+        launcher.setAttribute('aria-expanded', 'true');
       }
-
-      function safeHttpUrl(value) {
-        if (!value || typeof value !== 'string') {
-          return '';
-        }
-
-        try {
-          const url = new URL(value, window.location.href);
-
-          return ['https:', 'http:'].includes(url.protocol)
-            ? url.href
-            : '';
-        } catch {
-          return '';
-        }
+      function closeHelp() {
+        panel.hidden = true;
+        launcher.setAttribute('aria-expanded', 'false');
       }
-
-      function formatPrice(value) {
-        if (
-          value === null ||
-          value === undefined ||
-          String(value).trim() === ''
-        ) {
-          return '';
-        }
-
-        const price = Number(value);
-
-        if (!Number.isFinite(price) || price < 0) {
-          return '';
-        }
-
-        return price.toLocaleString('pt-BR', {
-          style: 'currency',
-          currency: 'BRL'
-        });
-      }
-
-      function renderProducts() {
-        const query = search.value
-          .trim()
-          .toLocaleLowerCase('pt-BR');
-
-        const visibleProducts = products.filter(product => {
-          const searchable = [
-            product.name,
-            product.description,
-            product.category
-          ]
-            .join(' ')
-            .toLocaleLowerCase('pt-BR');
-
-          const matchesText = searchable.includes(query);
-
-          const matchesCategory =
-            !selectedCategory ||
-            product.category === selectedCategory;
-
-          return matchesText && matchesCategory;
-        });
-
-        grid.replaceChildren();
-
-        visibleProducts.forEach(product => {
-          const card = textElement('article', '', 'product');
-
-          const imageUrl = safeHttpUrl(product.image_url);
-
-          if (imageUrl) {
-            const photo = textElement(
-              'div',
-              '',
-              'product-art product-photo'
-            );
-
-            const image = document.createElement('img');
-
-            image.src = imageUrl;
-            image.alt = product.name || 'Foto do produto';
-            image.loading = 'lazy';
-
-            image.onerror = () => {
-              photo.replaceChildren(
-                textElement('span', '🛍️')
-              );
-            };
-
-            photo.appendChild(image);
-            card.appendChild(photo);
+      launcher.addEventListener('click', () => panel.hidden ? openHelp() : closeHelp());
+      close.addEventListener('click', closeHelp);
+      const replies = {
+        produto: 'Abra o produto desejado e confira a descrição e as informações no anúncio do vendedor. Se precisar de ajuda específica, fale com a nossa equipe.',
+        preco: 'Os preços e a disponibilidade podem mudar. Confira sempre o valor final no site do vendedor antes de concluir a compra.',
+        compra: 'Clique em “Ver oferta” no produto escolhido. Você será encaminhado ao site do vendedor para conferir os detalhes e finalizar a compra.',
+        pessoa: 'Para falar com a equipe, use o botão do WhatsApp abaixo.'
+      };
+      document.querySelectorAll('[data-help]').forEach(button => {
+        button.addEventListener('click', () => {
+          answer.textContent = replies[button.dataset.help];
+          answer.hidden = false;
+          if (WHATSAPP_COMERCIAL.trim()) {
+            whatsapp.href = 'https://wa.me/' + WHATSAPP_COMERCIAL.replace(/\D/g, '') + '?text=' + encodeURIComponent('Olá! Vim pelo site JNHL Commerce e preciso de ajuda.');
+            whatsapp.hidden = false;
           } else {
-            card.appendChild(
-              textElement('div', '🛍️', 'product-art')
-            );
-          }
-
-          const body = textElement('div', '', 'product-body');
-
-          body.appendChild(
-            textElement(
-              'span',
-              product.category || 'Geral',
-              'tag'
-            )
-          );
-
-          body.appendChild(
-            textElement('h3', product.name || 'Produto')
-          );
-
-          // Exibe o preço cadastrado no Supabase.
-          const formattedPrice = formatPrice(product.price);
-
-          if (formattedPrice) {
-            body.appendChild(
-              textElement(
-                'div',
-                formattedPrice,
-                'product-price'
-              )
-            );
-          }
-
-          body.appendChild(
-            textElement(
-              'p',
-              product.description ||
-                'Confira os detalhes no anúncio do vendedor.'
-            )
-          );
-
-          const affiliateUrl = safeHttpUrl(product.affiliate_url);
-
-          if (affiliateUrl) {
-            const link = textElement(
-              'a',
-              'Ver oferta ↗',
-              'btn'
-            );
-
-            link.href = affiliateUrl;
-            link.target = '_blank';
-            link.rel = 'noopener noreferrer sponsored';
-
-            body.appendChild(link);
-          }
-
-          card.appendChild(body);
-          grid.appendChild(card);
-        });
-
-        noResults.classList.toggle(
-          'hidden',
-          visibleProducts.length > 0
-        );
-      }
-
-      async function loadProducts() {
-        status.classList.remove('hidden');
-        status.textContent = 'Carregando produtos...';
-
-        noResults.classList.add('hidden');
-        grid.replaceChildren();
-
-        try {
-          if (!window.supabase) {
-            throw new Error(
-              'A biblioteca do Supabase não carregou.'
-            );
-          }
-
-          if (!supabaseClient) {
-            supabaseClient = window.supabase.createClient(
-              SUPABASE_URL,
-              SUPABASE_KEY
-            );
-          }
-
-          const { data, error } = await supabaseClient
-            .from('products')
-            .select(
-              'id, name, description, category, image_url, price, affiliate_url, active, created_at'
-            )
-            .eq('active', true)
-            .order('created_at', { ascending: false });
-
-          if (error) {
-            throw error;
-          }
-
-          products = data || [];
-
-          renderProducts();
-
-          if (products.length > 0) {
-            status.textContent = '';
-            status.classList.add('hidden');
-          } else {
-            status.textContent =
-              'Ainda não há produtos ativos. Cadastre ou ative um produto no painel administrativo.';
-          }
-        } catch (error) {
-          products = [];
-          grid.replaceChildren();
-
-          status.classList.remove('hidden');
-          status.textContent =
-            'Não foi possível carregar os produtos. Verifique a conexão com o Supabase e as permissões do banco.';
-
-          console.error(
-            'Erro ao carregar produtos:',
-            error
-          );
-        }
-      }
-
-      search.addEventListener('input', renderProducts);
-
-      searchForm.addEventListener('submit', event => {
-        event.preventDefault();
-        renderProducts();
-
-        document
-          .getElementById('ofertas')
-          .scrollIntoView({ behavior: 'smooth' });
-      });
-
-      categoryLinks.forEach(link => {
-        link.addEventListener('click', () => {
-          const clickedCategory = link.dataset.category;
-
-          selectedCategory =
-            selectedCategory === clickedCategory
-              ? ''
-              : clickedCategory;
-
-          categoryLinks.forEach(item => {
-            const selected =
-              item.dataset.category === selectedCategory;
-
-            item.classList.toggle('selected', selected);
-
-            if (selected) {
-              item.setAttribute('aria-current', 'true');
-            } else {
-              item.removeAttribute('aria-current');
+            whatsapp.hidden = true;
+            if (button.dataset.help === 'pessoa') {
+              answer.textContent += ' O WhatsApp ainda precisa ser configurado no código do site.';
             }
-          });
-
-          renderProducts();
+          }
         });
       });
-
-      loadProducts();
     })();
   </script>
-</body>
-</html>
-```
 
-  </main>
-
-  <footer>
-    <div class="wrap footrow">
-      <div>
-        <strong>JNHL Commerce</strong><br>
-        Descubra. Compare. Escolha.
-      </div>
-      <div>
-        Os preços, condições e disponibilidade podem mudar e devem ser conferidos no site do vendedor.<br>
-        Alguns links podem gerar comissão para a JNHL Commerce, sem custo adicional ao comprador.
-      </div>
-    </div>
-  </footer>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    (() => {
-      'use strict';
-
-      const SUPABASE_URL = 'https://irtqenyuevxfuenuqcqq.supabase.co';
-      const SUPABASE_KEY = 'sb_publishable_rVnd_c4Pb7ZBSsAY3xX9WQ_EieuPSeR';
-
-      const grid = document.getElementById('productGrid');
-      const search = document.getElementById('search');
-      const searchForm = document.getElementById('searchForm');
-      const status = document.getElementById('loadStatus');
-      const noResults = document.getElementById('noResults');
-      const categoryLinks = [...document.querySelectorAll('[data-category]')];
-
-      let supabaseClient;
-      let products = [];
-      let selectedCategory = '';
-
-      function textElement(tag, text, className) {
-        const el = document.createElement(tag);
-        el.textContent = text || '';
-        if (className) el.className = className;
-        return el;
-      }
-
-      function safeHttpUrl(value) {
-        if (!value || typeof value !== 'string') return '';
-        try {
-          const url = new URL(value, window.location.href);
-          return ['https:', 'http:'].includes(url.protocol) ? url.href : '';
-        } catch {
-          return '';
-        }
-      }
-
-      function renderProducts() {
-        const query = search.value.trim().toLocaleLowerCase('pt-BR');
-
-        const visibleProducts = products.filter(product => {
-          const searchable = [
-            product.name,
-            product.description,
-            product.category
-          ].join(' ').toLocaleLowerCase('pt-BR');
-
-          return searchable.includes(query) &&
-            (!selectedCategory || product.category === selectedCategory);
-        });
-
-        grid.replaceChildren();
-
-        visibleProducts.forEach(product => {
-          const card = textElement('article', '', 'product');
-
-          const imageUrl = safeHttpUrl(product.image_url);
-          if (imageUrl) {
-            const photo = textElement('div', '', 'product-art product-photo');
-            const image = document.createElement('img');
-            image.src = imageUrl;
-            image.alt = product.name || 'Foto do produto';
-            image.loading = 'lazy';
-            image.onerror = () => {
-              photo.replaceChildren(textElement('span', '🛍️'));
-            };
-            photo.appendChild(image);
-            card.appendChild(photo);
-          } else {
-            card.appendChild(textElement('div', '🛍️', 'product-art'));
-          }
-
-          const body = textElement('div', '', 'product-body');
-          body.appendChild(textElement('span', product.category || 'Geral', 'tag'));
-          body.appendChild(textElement('h3', product.name || 'Produto'));
-          body.appendChild(textElement('p', product.description || 'Confira os detalhes no anúncio do vendedor.'));
-
-          const affiliateUrl = safeHttpUrl(product.affiliate_url);
-          if (affiliateUrl) {
-            const link = textElement('a', 'Ver oferta ↗', 'btn');
-            link.href = affiliateUrl;
-            link.target = '_blank';
-            link.rel = 'noopener noreferrer sponsored';
-            body.appendChild(link);
-          }
-
-          card.appendChild(body);
-          grid.appendChild(card);
-        });
-
-        noResults.classList.toggle('hidden', visibleProducts.length > 0);
-      }
-
-      async function loadProducts() {
-        status.textContent = 'Carregando produtos...';
-        noResults.classList.add('hidden');
-        grid.replaceChildren();
-
-        try {
-          if (!window.supabase) {
-            throw new Error('A biblioteca de conexão não carregou. Atualize a página e tente novamente.');
-          }
-
-          if (!supabaseClient) {
-            supabaseClient = window.supabase.createClient(
-              SUPABASE_URL,
-              SUPABASE_KEY
-            );
-          }
-
-          const { data, error } = await supabaseClient
-            .from('products')
-            .select('id, name, description, category, image_url, affiliate_url, active, created_at')
-            .eq('active', true)
-            .order('created_at', { ascending: false });
-
-          if (error) throw error;
-
-          products = data || [];
-          renderProducts();
-
-          status.textContent = products.length
-            ? ''
-            : 'Ainda não há produtos ativos. Cadastre um produto no painel administrativo.';
-          status.classList.toggle('hidden', products.length > 0);
-        } catch (error) {
-          products = [];
-          grid.replaceChildren();
-          status.classList.remove('hidden');
-          status.textContent =
-            'Não foi possível carregar os produtos. Verifique a conexão com o banco e as permissões do Supabase.';
-          console.error('Erro ao carregar produtos:', error);
-        }
-      }
-
-      search.addEventListener('input', renderProducts);
-      searchForm.addEventListener('submit', event => {
-        event.preventDefault();
-        renderProducts();
-        document.getElementById('ofertas').scrollIntoView({ behavior: 'smooth' });
-      });
-
-      categoryLinks.forEach(link => {
-        link.addEventListener('click', () => {
-          selectedCategory = selectedCategory === link.dataset.category
-            ? ''
-            : link.dataset.category;
-
-          categoryLinks.forEach(item => {
-            const selected = item.dataset.category === selectedCategory;
-            item.classList.toggle('selected', selected);
-            if (selected) item.setAttribute('aria-current', 'true');
-            else item.removeAttribute('aria-current');
-          });
-
-          renderProducts();
-        });
-      });
-
-      loadProducts();
-    })();
-  </script>
-</body>
-</html>              <p>
-                Uma opção prática para praia, varanda, jardim e momentos
-                ao ar livre. Confira preço, cores e disponibilidade no anúncio.
-              </p>
-
-              <a
-                class="btn"
-                href="https://meli.la/1beXzrq"
-                target="_blank"
-                rel="noopener noreferrer"
-              >Ver oferta no Mercado Livre ↗</a>
-            </div>
-          </article>
-
-          <article
-            class="product placeholder"
-            data-category="Tecnologia"
-            data-name="Novidades em tecnologia"
-          >
-            <div class="product-art">⌁</div>
-            <div class="product-body">
-              <span class="tag">Tecnologia</span>
-              <h3>Novidades em tecnologia</h3>
-              <p>Este espaço está pronto para receber produtos selecionados desta categoria.</p>
-              <a class="btn" href="#sobre">Em breve</a>
-            </div>
-          </article>
-
-          <article
-            class="product placeholder"
-            data-category="Casa e decoração"
-            data-name="Casa e utilidades"
-          >
-            <div class="product-art">⌂</div>
-            <div class="product-body">
-              <span class="tag">Casa e decoração</span>
-              <h3>Casa e utilidades</h3>
-              <p>Produtos para deixar a rotina mais prática e os ambientes com a sua cara.</p>
-              <a class="btn" href="#sobre">Em breve</a>
-            </div>
-          </article>
-        </div>
-
-        <p id="noResults" class="sub hidden">
-          Nenhum produto encontrado. Tente outro termo.
-        </p>
-      </div>
-    </section>
-
-    <section class="section" id="sobre">
-      <div class="wrap">
-        <div class="banner">
-          <div>
-            <h2>Uma vitrine. Muitas possibilidades.</h2>
-            <p>A JNHL Commerce reúne produtos de diferentes segmentos para você descobrir novas opções.</p>
-          </div>
-
-          <a class="btn" href="#categorias">Ver categorias</a>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="wrap footrow">
-      <div>
-        <strong>JNHL Commerce</strong><br>
-        Descubra. Compare. Escolha.
-      </div>
-
-      <div>
-        Os preços, condições e disponibilidade podem mudar e devem ser conferidos no site do vendedor.<br>
-        Alguns links podem gerar comissão para a JNHL Commerce, sem custo adicional ao comprador.
-      </div>
-    </div>
-  </footer>
-
-  <script>
-    const search = document.getElementById('search');
-    const cards = [...document.querySelectorAll('.product')];
-    const noResults = document.getElementById('noResults');
-    let selectedCategory = '';
-
-    function filterProducts() {
-      const q = search.value.trim().toLocaleLowerCase('pt-BR');
-      let shown = 0;
-
-      cards.forEach(card => {
-        const text = (
-          card.dataset.name + ' ' +
-          card.dataset.category + ' ' +
-          card.innerText
-        ).toLocaleLowerCase('pt-BR');
-
-        const matchText = text.includes(q);
-        const matchCat =
-          !selectedCategory || card.dataset.category === selectedCategory;
-
-        const visible = matchText && matchCat;
-        card.classList.toggle('hidden', !visible);
-
-        if (visible) shown++;
-      });
-
-      noResults.classList.toggle('hidden', shown > 0);
-    }
-
-    document.getElementById('searchBtn')
-      .addEventListener('click', filterProducts);
-
-    search.addEventListener('input', filterProducts);
-
-    document.querySelectorAll('[data-category]').forEach(link => {
-      link.addEventListener('click', () => {
-        selectedCategory = link.dataset.category;
-        filterProducts();
-      });
-    });
-  </script>
 </body>
 </html>
