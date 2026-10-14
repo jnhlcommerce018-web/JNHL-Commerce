@@ -100,7 +100,7 @@
     .help-option{padding:9px 10px;font-size:.82rem;text-align:left;border:1px solid #2c5278;border-radius:10px;background:#0d243c;color:#eaf5ff;cursor:pointer;font:inherit;transition:border-color .18s,background .18s,transform .18s}
     .help-option:hover,.help-option:focus-visible{border-color:#55aaff;background:#123052;transform:translateY(-1px);outline:none}
     .help-answer{margin:10px 0 0;padding:11px 12px;border:1px solid #3671a5;border-left:3px solid #3da0ff;border-radius:10px;background:linear-gradient(135deg,#102d49,#0d243b);color:#e3f2ff;line-height:1.55;font-size:.84rem;box-shadow:0 6px 18px #0002}
-    .help-whatsapp{display:block;margin-top:9px;text-align:center;text-decoration:none;border-radius:10px;padding:10px;background:#16a765;color:white;font-weight:800;font-size:.84rem;box-shadow:0 5px 14px #16a76533}
+    .help-whatsapp[hidden]{display:none!important}.help-whatsapp{display:block;margin-top:9px;text-align:center;text-decoration:none;border-radius:10px;padding:10px;background:#16a765;color:white;font-weight:800;font-size:.84rem;box-shadow:0 5px 14px #16a76533}
     .help-whatsapp:hover{background:#128b55}
     .help-note{margin:10px 0 0;padding-top:9px;border-top:1px solid #203e5b;color:#90a8c1;font-size:.7rem;line-height:1.45}
     @media(max-width:560px){.help-launcher{right:10px;bottom:10px;padding:5px 9px 5px 5px;font-size:.78rem}.help-logo{width:28px;height:28px}.help-panel{right:10px;bottom:56px;width:min(310px,calc(100vw - 20px));max-height:66vh}.help-content{padding:10px}.brand{font-size:.95rem}h1{letter-spacing:-1px}}
@@ -608,7 +608,7 @@ header .nav .top-social svg{width:17px;height:17px}
 <div class="help-content">
 <div class="help-bubble">Olá! 👋 Seja bem-vindo à JNHL Commerce. Escolha uma opção e vamos ajudar você.</div>
 <div aria-live="polite" class="help-answer" hidden="" id="helpAnswer"></div>
-<a class="help-whatsapp" hidden="" href="#" id="helpWhatsapp" rel="noopener noreferrer" target="_blank">Falar com a equipe no WhatsApp ↗</a>
+<a class="help-whatsapp" hidden href="https://wa.me/5511971884819" id="helpWhatsapp" rel="noopener noreferrer" target="_blank">Falar com a equipe no WhatsApp ↗</a>
 <div class="help-options">
 <p class="help-prompt">Escolha uma opção:</p>
 <button class="help-option" data-help="produto" type="button">🛍️ Quero saber sobre um produto</button>
