@@ -608,7 +608,7 @@ header .nav .top-social svg{width:17px;height:17px}
 <div class="help-content">
 <div class="help-bubble">Olá! 👋 Seja bem-vindo à JNHL Commerce. Escolha uma opção e vamos ajudar você.</div>
 <div aria-live="polite" class="help-answer" hidden="" id="helpAnswer"></div>
-<a class="help-whatsapp" hidden href="https://wa.me/5511971884819" id="helpWhatsapp" rel="noopener noreferrer" target="_blank">Falar com a equipe no WhatsApp ↗</a>
+<a class="help-whatsapp" href="https://wa.me/5511971884819?text=Ol%C3%A1%21%20Vim%20pelo%20site%20da%20JNHL%20Commerce%20e%20gostaria%20de%20falar%20com%20a%20equipe." id="helpWhatsapp" rel="noopener noreferrer" target="_blank">Falar com a equipe no WhatsApp ↗</a>
 <div class="help-options">
 <p class="help-prompt">Escolha uma opção:</p>
 <button class="help-option" data-help="produto" type="button">🛍️ Quero saber sobre um produto</button>
@@ -649,12 +649,10 @@ header .nav .top-social svg{width:17px;height:17px}
         button.addEventListener('click', () => {
           answer.textContent = replies[button.dataset.help];
           answer.hidden = false;
-          // O WhatsApp é a última opção: só aparece quando a pessoa escolhe falar com alguém.
-          if (button.dataset.help === 'pessoa' && WHATSAPP_COMERCIAL.trim()) {
+          // Mantém o acesso ao WhatsApp visível em todas as opções do assistente.
+          if (WHATSAPP_COMERCIAL.trim()) {
             whatsapp.href = 'https://wa.me/' + WHATSAPP_COMERCIAL.replace(/\D/g, '') + '?text=' + encodeURIComponent('Olá! Vim pelo site da JNHL Commerce e gostaria de falar com a equipe.');
             whatsapp.hidden = false;
-          } else {
-            whatsapp.hidden = true;
           }
         });
       });
