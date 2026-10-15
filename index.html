@@ -8,8 +8,8 @@
 <title>JNHL Commerce | Qualidade, praticidade e escolha</title>
 <style>
     /* ==========================================
-       VARIÁVEIS E CONFIGURAÇÕES GLOBAIS
-       ========================================== */
+        VARIÁVEIS E CONFIGURAÇÕES GLOBAIS
+        ========================================== */
     :root {
         --navy: #020b1b;
         --panel: #041a35;
@@ -29,8 +29,8 @@
     .hidden { display: none !important; }
 
     /* ==========================================
-       CABEÇALHO E NAVEGAÇÃO
-       ========================================== */
+        CABEÇALHO E NAVEGAÇÃO
+        ========================================== */
     header {
         background: #020b1bf5 !important;
         border-bottom: 1px solid #07518c !important;
@@ -39,12 +39,13 @@
         z-index: 5;
     }
     header .nav {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 20px;
-        min-height: 78px;
-        padding: 10px 0;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 20px !important;
+        min-height: 78px !important;
+        padding: 10px 0 !important;
+        flex-wrap: nowrap !important;
     }
     
     /* Logo Circular */
@@ -59,35 +60,39 @@
     }
     .brand span { color: var(--blue); }
     .brand-logo {
-        width: 88px !important;
-        height: 88px !important;
-        max-height: none !important;
-        max-width: 88px !important;
+        width: 60px !important;
+        height: 60px !important;
+        min-width: 60px !important;
+        max-width: 60px !important;
+        max-height: 60px !important;
         aspect-ratio: 1/1;
         object-fit: cover !important;
         object-position: center;
         border-radius: 50% !important;
-        border: 3px solid #2b8fff;
-        box-shadow: 0 0 0 4px rgba(0,160,255,.28), 0 0 18px rgba(0,145,255,.18);
+        border: 2.5px solid #2b8fff;
+        box-shadow: 0 0 0 3px rgba(0,160,255,.28), 0 0 14px rgba(0,145,255,.18);
         background: #0b1b2e;
         display: block;
-        flex: 0 0 88px;
+        flex-shrink: 0 !important;
         overflow: hidden;
     }
 
     /* Links de Navegação */
     .navlinks {
-        display: flex;
-        align-items: center;
-        gap: clamp(12px, 2vw, 26px) !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: clamp(10px, 1.5vw, 20px) !important;
         color: #d9eaff !important;
         font-size: .82rem !important;
         font-weight: 700;
+        flex-shrink: 1 !important;
+        overflow-x: auto !important;
+        white-space: nowrap !important;
     }
     .navlinks a {
         display: inline-flex;
         align-items: center;
-        padding: 9px 8px !important;
+        padding: 8px 10px !important;
         border: 1px solid transparent;
         border-radius: 999px;
         transition: background .2s, border-color .2s, color .2s;
@@ -99,8 +104,8 @@
     }
 
     /* ==========================================
-       HERO / SEÇÃO PRINCIPAL
-       ========================================== */
+        HERO / SEÇÃO PRINCIPAL
+        ========================================== */
     .hero {
         padding: 0 !important;
         min-height: 370px;
@@ -212,8 +217,8 @@
     }
 
     /* ==========================================
-       SEÇÕES, CATEGORIAS E PRODUTOS
-       ========================================== */
+        SEÇÕES, CATEGORIAS E PRODUTOS
+        ========================================== */
     .section { padding: 25px 0 !important; position: relative; }
     .sectionhead {
         display: flex;
@@ -297,46 +302,15 @@
     .product .btn { margin-top: 8px !important; width: 100%; min-height: 37px !important; font-size: .76rem !important; }
 
     /* ==========================================
-       BANNER DE OFERTAS E CONFIANÇA
-       ========================================== */
-    .trust-strip { padding: 2px 0 22px; background: transparent; }
-    .trust-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 12px;
-        padding: 18px 22px;
-        border: 1px solid #07518c;
-        border-radius: 14px;
-        background: linear-gradient(110deg, #041b38, #031329);
-    }
-    .trust-item { display: flex; align-items: center; gap: 14px; padding: 0 8px; }
-    .trust-icon { font-size: 2.1rem; color: #009eff; line-height: 1; }
-    .trust-item strong { display: block; font-size: .8rem; color: #f4f8ff; }
-    .trust-item small { display: block; color: #a8c8ed; font-size: .73rem; line-height: 1.35; margin-top: 3px; }
-
-    .banner {
-        border: 1px solid #07518c;
-        border-radius: 16px;
-        padding: 28px;
-        background: radial-gradient(ellipse at 100% 0, #007fff2e, transparent 52%), linear-gradient(115deg, #06234a, #03132b);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 24px;
-    }
-    .banner h2 { margin: 0 0 8px; font-size: 1.7rem; }
-    .banner p { color: #b7c8dc; margin: 0; line-height: 1.6; }
-
-    /* ==========================================
-       REDES SOCIAIS E RODAPÉ
-       ========================================== */
+        REDES SOCIAIS E RODAPÉ
+        ========================================== */
     .top-social {
         display: flex !important;
-        align-items: center;
-        gap: 7px;
-        padding: 0;
-        margin-left: 2px;
-        flex: 0 0 auto;
+        align-items: center !important;
+        gap: 7px !important;
+        padding: 0 !important;
+        margin-left: auto !important;
+        flex-shrink: 0 !important;
     }
     .top-social a {
         width: 30px;
@@ -368,111 +342,8 @@
     .footrow { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; align-items: center; }
 
     /* ==========================================
-       ATENDIMENTO FLUTUANTE (WHATSAPP)
-       ========================================== */
-    .help-launcher {
-        position: fixed;
-        right: 18px;
-        bottom: 18px;
-        z-index: 20;
-        display: flex;
-        align-items: center;
-        gap: 7px;
-        border: 1px solid #75c4ff66;
-        border-radius: 999px;
-        padding: 6px 12px 6px 6px;
-        background: linear-gradient(135deg, #1688ff, #0757c9);
-        color: white;
-        box-shadow: 0 0 25px #009dff99 !important;
-        cursor: pointer;
-        font: inherit;
-        font-size: .82rem;
-        font-weight: 800;
-        transition: transform .2s;
-    }
-    .help-launcher:hover { transform: translateY(-3px); }
-    .help-logo {
-        width: 30px;
-        height: 30px;
-        display: block;
-        object-fit: cover;
-        object-position: center;
-        border-radius: 50%;
-        border: 2px solid #c5e6ff;
-        flex-shrink: 0;
-        background: #0b1b2e;
-    }
-    .help-panel {
-        position: fixed;
-        right: 18px;
-        bottom: 64px;
-        z-index: 21;
-        width: min(310px, calc(100vw - 28px));
-        max-height: min(68vh, 520px);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        border: 1px solid #008fff !important;
-        border-radius: 16px;
-        background: #0b1d32;
-        color: #f7fbff;
-        box-shadow: 0 0 0 1px #008fff33, 0 18px 48px #000b !important;
-    }
-    .help-panel[hidden] { display: none; }
-    .help-head {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 11px 12px;
-        flex-shrink: 0;
-        background: linear-gradient(120deg, #1268c9, #0c2a4b);
-    }
-    .help-close {
-        margin-left: auto;
-        border: 0;
-        background: #ffffff1b;
-        color: white;
-        font-size: 1.2rem;
-        border-radius: 8px;
-        width: 30px;
-        height: 30px;
-        cursor: pointer;
-    }
-    .help-content { padding: 12px; overflow-y: auto; overscroll-behavior: contain; }
-    .help-bubble { padding: 10px 11px; border-radius: 12px 12px 12px 4px; background: #142e49; color: #e5f2ff; line-height: 1.5; font-size: .85rem; }
-    .help-options { display: grid; gap: 7px; margin-top: 10px; }
-    .help-prompt { margin: 0 0 1px; color: #9fc8ee; font-size: .75rem; font-weight: 800; text-transform: uppercase; }
-    .help-option {
-        padding: 9px 10px;
-        font-size: .82rem;
-        text-align: left;
-        border: 1px solid #2c5278;
-        border-radius: 10px;
-        background: #0d243c;
-        color: #eaf5ff;
-        cursor: pointer;
-        font: inherit;
-        transition: border-color .18s, background .18s;
-    }
-    .help-option:hover { border-color: #55aaff; background: #123052; }
-    .help-whatsapp {
-        display: block;
-        margin-top: 9px;
-        text-align: center;
-        text-decoration: none;
-        border-radius: 10px;
-        padding: 10px;
-        background: #16a765;
-        color: white;
-        font-weight: 800;
-        font-size: .84rem;
-    }
-    .help-whatsapp:hover { background: #128b55; }
-    .help-note { margin: 10px 0 0; padding-top: 9px; border-top: 1px solid #203e5b; color: #90a8c1; font-size: .7rem; line-height: 1.45; }
-
-    /* ==========================================
-       RESPONSIVIDADE
-       ========================================== */
+        RESPONSIVIDADE
+        ========================================== */
     @media(max-width: 900px) {
         .hero-layout { grid-template-columns: 1fr .72fr; }
         .hero-art { height: 300px; }
@@ -480,17 +351,27 @@
         .categories { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
     }
     @media(max-width: 600px) {
-        header .nav { flex-wrap: wrap; gap: 8px; padding: 9px 0; }
-        .brand-logo { width: 64px !important; height: 64px !important; max-width: 64px !important; flex-basis: 64px; }
-        .navlinks {
-            width: 100%;
-            overflow-x: auto;
-            display: flex;
-            gap: 12px !important;
-            white-space: nowrap;
-            padding: 2px 0 7px;
+        header .nav {
+            flex-wrap: nowrap !important;
+            gap: 8px !important;
+            padding: 8px 0 !important;
         }
-        .navlinks a { font-size: .76rem !important; }
+        .brand-logo {
+            width: 44px !important;
+            height: 44px !important;
+            min-width: 44px !important;
+            max-width: 44px !important;
+            max-height: 44px !important;
+            flex-basis: 44px !important;
+        }
+        .navlinks {
+            gap: 8px !important;
+            overflow-x: auto !important;
+            white-space: nowrap !important;
+            padding: 0 !important;
+            font-size: .75rem !important;
+        }
+        .navlinks a { padding: 6px 6px !important; font-size: .74rem !important; }
         .hero-layout { display: block; min-height: 0; }
         .hero-copy { padding: 36px 0 22px; }
         .hero h1 { font-size: 2.25rem !important; max-width: 100% !important; }
