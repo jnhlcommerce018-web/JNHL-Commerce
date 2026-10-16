@@ -1,193 +1,66 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="JNHL Commerce — descubra produtos, compare ofertas e encontre novidades para o seu dia a dia." name="description"/>
 <meta content="#071426" name="theme-color"/>
-<title>JNHL Commerce | Qualidade, praticidade escolha</title>
+<title>JNHL Commerce | Qualidade, praticidade e escolha</title>
 <style>
-    :root{--navy:#071426;--panel:#0d2038;--blue:#1688ff;--muted:#9fb0c6;--line:#203651}
+    :root{--navy:#020b1b;--panel:#041a35;--blue:#009eff;--muted:#abc6e8;--line:#07518c}
     *{box-sizing:border-box}
-    body{margin:0;background:var(--navy);color:#f7fbff;font-family:Inter,"Segoe UI",Arial,sans-serif}
+    body{margin:0;background:var(--navy);color:#f6f9ff;font-family:Inter,"Segoe UI",Arial,sans-serif}
     a{color:inherit;text-decoration:none}
-    .wrap{width:min(1160px,92%);margin:auto}
-    header{border-bottom:1px solid var(--line);background:rgba(7,20,38,.98);position:relative;z-index:5}
-    .nav{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:18px 0}
-    .brand{font-weight:900;letter-spacing:.4px;font-size:1.18rem}.brand span{color:var(--blue)}
-    .navlinks{display:flex;gap:22px;color:#c3d2e5;font-size:.93rem}
-    .hero{padding:70px 0 54px;background:radial-gradient(ellipse at 80% 20%,#10396b 0,transparent 45%),linear-gradient(135deg,#071426,#0b1e35)}
-    .eyebrow{color:#65b2ff;font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:2px}
-    h1{font-size:clamp(2.4rem,5vw,4.5rem);line-height:1.03;max-width:760px;margin:16px 0}h1 span{color:#55aaff}
+    .wrap{width:min(1180px,92%);margin:auto}
+    header{border-bottom:1px solid var(--line);background:rgba(2,11,27,.97);position:relative;z-index:5;box-shadow:0 7px 25px #0005}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:15px 0}
+    .brand{font-weight:900;letter-spacing:.4px;font-size:1.18rem;display:flex;align-items:center;gap:14px}
+    .brand span{color:var(--blue)}
+    .brand-logo{width:70px;height:70px;object-fit:cover;border-radius:50%;border:2px solid var(--blue);background:#0b1b2e}
+    .navlinks{display:flex;align-items:center;gap:20px;color:#d9eaff;font-size:.9rem}
+    .navlinks a{padding:8px 12px;border-radius:8px;transition:.2s}
+    .navlinks a:hover{color:#00c5ff;background:#008cff15}
+    
+    .top-social{display:flex;align-items:center;gap:8px}
+    .top-social a{width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;background:#0b1d32;border:1px solid #168cff66;color:#fff;transition:.2s}
+    .top-social a:hover{transform:translateY(-2px);background:#123052}
+    .top-social svg{width:16px;height:16px;fill:currentColor}
+
+    .hero{padding:70px 0 54px;background:radial-gradient(ellipse at 80% 20%,#10396b 0,transparent 45%),linear-gradient(135deg,#020b1b,#0b1e35)}
+    .eyebrow{display:inline-flex;padding:6px 12px;border:1px solid #55aaff44;background:#1688ff14;border-radius:999px;color:#65b2ff;font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:2px}
+    h1{font-size:clamp(2.4rem,5vw,4.5rem);line-height:1.03;max-width:760px;margin:16px 0}
+    h1 span{color:#55aaff}
     .hero p{color:#b7c8dc;max-width:600px;font-size:1.08rem;line-height:1.7}
     .searchbar{display:flex;gap:10px;max-width:640px;margin-top:28px}
     .searchbar input{flex:1;min-width:0;border:1px solid #294766;border-radius:12px;background:var(--panel);color:white;padding:15px 16px;font-size:1rem;outline:none}
-    .btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:10px;padding:13px 17px;background:var(--blue);color:white;font-weight:800;cursor:pointer;text-align:center}
-    .section{padding:42px 0}.sectionhead{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:22px}.section h2{font-size:1.7rem;margin:0}
+    .btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:10px;padding:13px 17px;background:linear-gradient(135deg,#36a5ff,#1268ee);color:white;font-weight:800;cursor:pointer;text-align:center;transition:.2s}
+    .btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px #1688ff40}
+    
+    .section{padding:46px 0}
+    .sectionhead{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:26px}
+    .section h2{font-size:1.7rem;margin:0;letter-spacing:-.5px}
     .sub{color:var(--muted);margin:8px 0 0;line-height:1.6}
+    
     .categories{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
     .cat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:19px 12px;text-align:center;color:#dceaff;transition:.2s}
-    .cat:hover,.cat.selected{border-color:var(--blue);transform:translateY(-2px)}.cat .emoji{font-size:1.6rem;display:block;margin-bottom:9px}.cat span:last-child{font-size:.9rem}
+    .cat:hover,.cat.selected{border-color:var(--blue);transform:translateY(-2px);box-shadow:0 8px 20px #0003}
+    .cat .emoji{font-size:1.6rem;display:block;margin-bottom:9px}
+    
     .products{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
-    .product{min-width:0;border:1px solid var(--line);border-radius:17px;overflow:hidden;background:#0c1d32;display:flex;flex-direction:column}
-    .product-art{height:185px;display:grid;place-items:center;background:linear-gradient(135deg,#142e4c,#0d2038);font-size:4rem}
-    .product-photo{height:300px;padding:12px;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden}
-    .product-photo img{width:100%;height:100%;object-fit:contain;object-position:center;display:block}
-    .product-body{padding:19px;display:flex;flex-direction:column;flex:1}.tag{font-size:.72rem;text-transform:uppercase;letter-spacing:1.2px;color:#72baff;font-weight:800}
-    .product h3{margin:9px 0;font-size:1.1rem;overflow-wrap:anywhere}
+    .product{border:1px solid var(--line);border-radius:17px;overflow:hidden;background:#0c1d32;display:flex;flex-direction:column;transition:.2s}
+    .product:hover{transform:translateY(-4px);border-color:#277bc4;box-shadow:0 12px 30px #0004}
+    .product-photo{height:220px;background:#fff;display:flex;align-items:center;justify-content:center;padding:15px}
+    .product-photo img{max-height:100%;max-width:100%;object-fit:contain}
+    .product-body{padding:19px;display:flex;flex-direction:column;flex:1}
+    .tag{font-size:.72rem;text-transform:uppercase;letter-spacing:1.2px;color:#72baff;font-weight:800}
+    .product h3{margin:9px 0;font-size:1.1rem}
     .product-price{display:block;color:#55aaff;font-size:1.5rem;font-weight:900;margin:5px 0 10px}
-    .product p{color:#aebed1;line-height:1.55;font-size:.92rem;flex:1;overflow-wrap:anywhere}
+    .product p{color:#aebed1;line-height:1.55;font-size:.92rem;flex:1}
     .product .btn{margin-top:10px;width:100%}
-    .banner{border:1px solid #21456d;border-radius:18px;padding:28px;background:linear-gradient(115deg,#0e2d50,#0b1b30);display:flex;justify-content:space-between;align-items:center;gap:24px}
-    .banner h2{margin:0 0 8px}.banner p{color:#b7c8dc;margin:0;line-height:1.6}
-    footer{border-top:1px solid var(--line);padding:28px 0;color:#91a5bd;font-size:.85rem;line-height:1.7}
-    .footrow{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}.hidden{display:none!important}
-    #loadStatus{margin:0 0 18px;color:var(--muted);line-height:1.6}
-    @media(max-width:850px){.categories{grid-template-columns:repeat(3,1fr)}.products{grid-template-columns:repeat(2,minmax(0,1fr))}.navlinks{gap:12px}}
-    @media(max-width:560px){.nav{align-items:flex-start}.navlinks{display:none}.hero{padding:48px 0 38px}.searchbar{flex-direction:column}.categories{grid-template-columns:repeat(2,1fr)}.products{grid-template-columns:1fr}.product-art{height:150px}.product-photo{height:280px}.banner{align-items:flex-start;flex-direction:column}}
 
-    /* Visual renovado JNHL Commerce */
-    body{background:radial-gradient(ellipse at 50% -10%,#143e6d 0,transparent 45%),var(--navy)}
-    header{backdrop-filter:none;box-shadow:0 5px 18px #0002}
-    .brand{display:inline-flex;align-items:center;gap:9px;font-size:1.08rem;letter-spacing:.8px;min-width:0}
-    .brand-logo{display:block;width:clamp(110px,16vw,180px);height:auto;max-height:72px;object-fit:contain;border-radius:8px}
-    @media(max-width:560px){.brand-logo{width:clamp(95px,28vw,135px);max-height:58px}}
-    .brand:before{display:none}
-    .hero{position:relative;overflow:hidden;padding:clamp(64px,9vw,112px) 0 82px;background:radial-gradient(ellipse at 78% 20%,#1769b755 0,transparent 36%),linear-gradient(135deg,#071426 0%,#0b2341 55%,#071426 100%)}
-    .hero:after{content:"";position:absolute;width:340px;height:340px;right:-100px;bottom:-190px;border:1px solid #55aaff33;border-radius:50%;box-shadow:0 0 0 35px #55aaff08,0 0 0 70px #55aaff06;pointer-events:none}
-    .eyebrow{display:inline-flex;padding:9px 13px;border:1px solid #55aaff44;background:#1688ff14;border-radius:999px;letter-spacing:1.3px}
-    h1{letter-spacing:-2px;text-shadow:0 8px 38px #0005}
-    .hero p{font-size:1.12rem}
-    .searchbar input:focus{border-color:#55aaff;box-shadow:0 0 0 4px #1688ff20}
-    .btn{background:linear-gradient(135deg,#36a5ff,#1268ee);box-shadow:0 8px 24px #1688ff30;transition:transform .2s,box-shadow .2s}
-    .btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px #1688ff50}
-    .sectionhead{margin-bottom:26px}
-    .section h2{letter-spacing:-.5px}
-    .cat{background:linear-gradient(145deg,#102944,#0b1a2c);transition:transform .22s,border-color .22s,box-shadow .22s}
-    .cat:hover,.cat.selected{box-shadow:0 12px 28px #0003}
-    .product{box-shadow:0 10px 28px #0002;transition:transform .22s,border-color .22s,box-shadow .22s}
-    .product:hover{transform:translateY(-5px);border-color:#277bc4;box-shadow:0 18px 38px #0004}
-    .product-photo{background:linear-gradient(145deg,#fff,#eaf3fc)}
-    .product-price{letter-spacing:-.5px}
-    .banner{position:relative;overflow:hidden;background:radial-gradient(ellipse at 100% 0,#1688ff33,transparent 55%),linear-gradient(120deg,#102f52,#0b1b30);box-shadow:0 18px 45px #0002}
-    footer{background:#06101e}
-    .social-links{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin-top:13px}
-    .social-links a{display:inline-flex;align-items:center;gap:7px;padding:8px 10px;border:1px solid #294766;border-radius:10px;background:#0b1d32;color:#dcecff;font-size:.82rem;font-weight:700;transition:background .2s,border-color .2s,transform .2s}
-    .social-links a:hover{background:#123052;border-color:#55aaff;transform:translateY(-2px)}
-    .social-links svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-
-    /* Redes sociais no topo com ícones reconhecíveis */
-    .top-social{display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:9px 0 0}
-    .top-social a{width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;border-radius:10px;background:#102944;border:1px solid #294766;transition:transform .2s,background .2s}
-    .top-social a:hover{transform:translateY(-2px);background:#173a60}
-    .top-social svg{width:21px;height:21px;display:block;fill:currentColor;stroke:none}
-    .top-social .instagram{color:#ff70a6}
-    .top-social .tiktok{color:#ffffff;filter:drop-shadow(1px 0 #25f4ee) drop-shadow(-1px 0 #fe2c55)}
-    .top-social .facebook{color:#1877f2}
-    @media(max-width:560px){.top-social{justify-content:center;padding:8px 0 0}.top-social a{width:32px;height:32px}.nav{padding-top:10px}}
-    
-    /* Atendimento flutuante */
-    .help-launcher{position:fixed;right:18px;bottom:18px;z-index:20;display:flex;align-items:center;gap:7px;border:1px solid #75c4ff66;border-radius:999px;padding:6px 12px 6px 6px;background:linear-gradient(135deg,#1688ff,#0757c9);color:white;box-shadow:0 8px 24px #0006;cursor:pointer;font:inherit;font-size:.82rem;font-weight:800;transition:transform .2s}
-    .help-launcher:hover{transform:translateY(-3px)}
-    .help-logo{width:30px;height:30px;display:block;object-fit:cover;object-position:center;border-radius:50%;border:2px solid #c5e6ff;box-shadow:0 0 0 2px rgba(8,117,223,.25);flex-shrink:0;background:#0b1b2e}
-    .help-panel{position:fixed;right:18px;bottom:64px;z-index:21;width:min(310px,calc(100vw - 28px));max-height:min(68vh,520px);display:flex;flex-direction:column;overflow:hidden;border:1px solid #2c5278;border-radius:16px;background:#0b1d32;color:#f7fbff;box-shadow:0 18px 48px #0009}
-    .help-panel[hidden]{display:none}
-    .help-head{display:flex;align-items:center;gap:8px;padding:11px 12px;flex-shrink:0;background:linear-gradient(120deg,#1268c9,#0c2a4b)}
-    .help-head strong{display:block}.help-head small{display:block;color:#d5eaff;margin-top:3px}
-    .help-close{margin-left:auto;border:0;background:#ffffff1b;color:white;font-size:1.2rem;border-radius:8px;width:30px;height:30px;cursor:pointer}
-    .help-content{padding:12px;overflow-y:auto;overscroll-behavior:contain}
-    .help-bubble{padding:10px 11px;border-radius:12px 12px 12px 4px;background:#142e49;color:#e5f2ff;line-height:1.5;font-size:.85rem}
-    .help-options{display:grid;gap:7px;margin-top:10px}
-    .help-prompt{margin:0 0 1px;color:#9fc8ee;font-size:.75rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
-    .help-option{padding:9px 10px;font-size:.82rem;text-align:left;border:1px solid #2c5278;border-radius:10px;background:#0d243c;color:#eaf5ff;cursor:pointer;font:inherit;transition:border-color .18s,background .18s,transform .18s}
-    .help-option:hover,.help-option:focus-visible{border-color:#55aaff;background:#123052;transform:translateY(-1px);outline:none}
-    .help-answer{margin:10px 0 0;padding:11px 12px;border:1px solid #3671a5;border-left:3px solid #3da0ff;border-radius:10px;background:linear-gradient(135deg,#102d49,#0d243b);color:#e3f2ff;line-height:1.55;font-size:.84rem;box-shadow:0 6px 18px #0002}
-    .help-whatsapp[hidden]{display:none!important}.help-whatsapp{display:block;margin-top:9px;text-align:center;text-decoration:none;border-radius:10px;padding:10px;background:#16a765;color:white;font-weight:800;font-size:.84rem;box-shadow:0 5px 14px #16a76533}
-    .help-whatsapp:hover{background:#128b55}
-    .help-note{margin:10px 0 0;padding-top:9px;border-top:1px solid #203e5b;color:#90a8c1;font-size:.7rem;line-height:1.45}
-    @media(max-width:560px){.help-launcher{right:10px;bottom:10px;padding:5px 9px 5px 5px;font-size:.78rem}.help-logo{width:28px;height:28px}.help-panel{right:10px;bottom:56px;width:min(310px,calc(100vw - 20px));max-height:66vh}.help-content{padding:10px}.brand{font-size:.95rem}h1{letter-spacing:-1px}}
-
-    /* Ajustes de escala e largura para desktop e celular */
-    .wrap{width: min(1280px, 94vw) !important; margin-left:auto !important; margin-right:auto !important}
-    header .top-social{min-height:48px;justify-content:flex-end;padding:7px 0 !important}
-    header .nav{min-height:82px;padding:10px 0 !important;align-items:center}
-    .brand-logo{width:clamp(76px, 8vw, 118px) !important;max-height:58px !important;object-fit:contain}
-    .hero{padding:42px 0 38px !important}
-    .hero .wrap{max-width:1280px}
-    .hero h1{font-size:clamp(2rem, 3.7vw, 3.8rem) !important;max-width:850px}
-    .hero p{max-width:720px;font-size:clamp(.98rem,1.2vw,1.12rem) !important}
-    .searchbar{max-width:720px !important}
-    .section{padding:clamp(28px,3.5vw,46px) 0 !important}
-    .categories{grid-template-columns:repeat(6,minmax(0,1fr))}
-    .products{grid-template-columns:repeat(3,minmax(0,1fr))}
-    
-    .brand{gap:14px !important; flex-shrink:0; text-decoration:none}
-    .brand-logo{width:92px !important;height:78px !important;max-height:none !important;object-fit:cover;object-position:center;border-radius:12px;border:1px solid #284766;box-shadow:0 5px 18px #0005}
-    .brand-wordmark{display:flex;flex-direction:column;line-height:.95;gap:5px;white-space:nowrap}
-    .brand-wordmark strong{font-size:clamp(1.4rem,2vw,2rem);font-weight:950;letter-spacing:1.5px;color:#f4f8ff}
-    .brand-wordmark small{font-size:clamp(.68rem,1vw,.9rem);font-weight:850;letter-spacing:3px;color:#52a8ff}
-
-    /* Logo oficial em formato circular no cabeçalho */
-    .brand-logo{width:96px !important;height:96px !important;max-height:none !important;aspect-ratio:1/1;object-fit:cover;object-position:center;border-radius:50% !important;border:3px solid #2b8fff;box-shadow:0 0 0 4px rgba(43,143,255,.16),0 8px 22px rgba(0,0,0,.38);background:#0b1b2e}
-    .brand{align-items:center !important;gap:14px !important}
-
-    /* Cabeçalho mais leve */
-    header .top-social{min-height:0; padding:8px 0 !important}
-    header .nav{min-height:72px; padding:9px 0 !important; gap:18px}
-    .navlinks{display:flex;align-items:center;gap:8px;color:#d7e8fb;font-size:.9rem}
-    .navlinks a{display:inline-flex;align-items:center;padding:10px 12px;border:1px solid transparent;border-radius:10px;transition:background .2s,border-color .2s,color .2s}
-    .navlinks a:hover{background:#102944;border-color:#294766;color:#fff}
-
-    /* Referência visual: vitrine neon azul */
-    :root{--navy:#020b1c;--panel:#061a35;--blue:#009dff;--muted:#a9c5e7;--line:#064d88}
-    body{background:#020b1c;color:#f3f7ff}
-    header{background:rgba(2,11,28,.97);border-bottom:1px solid #07518c;box-shadow:0 8px 30px #0005}
-    .top-social{display:none}
-    .nav{min-height:76px;padding:10px 0;gap:24px}
-    .brand-logo{width:clamp(120px,17vw,180px);max-height:58px}
-    .navlinks{gap:clamp(12px,2.2vw,28px);align-items:center}
-    .navlinks a{font-size:.84rem;color:#d3e5ff;transition:color .2s}
-    .navlinks a:hover{color:#00b7ff}
-    
-    /* JNHL COMMERCE — redesign forte */
-    :root{--navy:#020b1b;--panel:#041a35;--blue:#009eff;--muted:#abc6e8;--line:#07518c}
-    body{background:#020b1b!important;color:#f6f9ff}
-    .wrap{width:min(1180px,92%)}
-    header{background:#020b1bf5!important;border-bottom:1px solid #07518c!important;box-shadow:0 7px 25px #0005!important}
-    header .nav{min-height:78px;padding:10px 0;gap:24px}
-    .brand-logo{width:180px!important;max-height:58px!important}
-    .navlinks{align-items:center;gap:clamp(12px,2vw,26px)!important}
-    .navlinks a{font-size:.82rem!important;font-weight:700;padding:9px 8px!important;color:#d9eaff!important}
-    .navlinks a:hover{color:#00c5ff!important;background:#008cff15!important;border-color:#008cff40!important}
-    
-    /* Ajuste solicitado: logo circular no cabeçalho */
-    .brand-logo{width:88px !important;height:88px !important;max-height:none !important;max-width:88px !important;object-fit:cover !important;aspect-ratio:1/1;border-radius:50% !important;display:block;flex:0 0 88px;overflow:hidden;box-shadow:0 0 0 3px rgba(0,160,255,.28),0 0 18px rgba(0,145,255,.18)}
-    .brand{align-items:center !important}
-    @media(max-width:560px){.brand-logo{width:64px !important;height:64px !important;max-width:64px !important;flex-basis:64px}}
-
-    /* Redes sociais visíveis também no rodapé */
-    .footer-social-row{display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;padding:22px 16px 8px;border-top:1px solid rgba(0,153,255,.25)}
-    .footer-social-title{color:#dceaff;font-weight:700;font-size:14px}
-    .footer-social-row .top-social{display:flex !important;visibility:visible !important;opacity:1 !important;width:auto !important;max-width:none !important;margin:0 !important;padding:0;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap}
-    .footer-social-row .top-social a{display:flex !important;visibility:visible !important;opacity:1 !important;align-items:center;justify-content:center;flex:0 0 38px;border-radius:50%;width:38px;height:38px;background:#071d39;border:1px solid #087fe8;box-shadow:0 0 12px rgba(0,145,255,.16)}
-    .footer-social-row .top-social a svg{display:block !important;width:18px;height:18px;fill:#fff}
-    .footer-social-row .top-social a:hover{background:#0b3970;transform:translateY(-3px)}
-
-    /* Redes sociais integradas ao cabeçalho, junto ao menu */
-    header .nav .top-social{display:flex!important;align-items:center;justify-content:center;gap:7px;padding:0;margin-left:2px;flex:0 0 auto}
-    header .nav .top-social a{width:30px;height:30px;flex:0 0 30px;border-radius:50%;background:#0b1d32;border:1px solid #168cff66;box-shadow:0 0 10px #087fe822}
-    header .nav .top-social svg{width:17px;height:17px}
-    @media(max-width:760px){header .nav{flex-wrap:wrap;row-gap:10px}header .nav .top-social{order:4;margin-left:auto}header .nav .btn{order:5}}
-    @media(max-width:560px){header .nav .top-social{justify-content:center;padding:0}header .nav .top-social a{width:30px;height:30px;flex-basis:30px}}
-
-    /* ==========================================================================
-       NOVO BLOCO ADICIONADO: SEÇÃO DE AVALIAÇÕES / DEPOIMENTOS DE CLIENTES
-       (Inserido sem modificar nem danificar o restante do código existente)
-       ========================================================================== */
     .testimonials-section {
         padding: 40px 0;
-        background: linear-gradient(180deg, rgba(3,27,55,0.4), rgba(2,11,27,0.8));
+        background: rgba(3,27,55,0.4);
         border-top: 1px solid var(--line);
         border-bottom: 1px solid var(--line);
         margin: 30px 0;
@@ -206,51 +79,194 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-        transition: transform 0.2s, border-color 0.2s;
     }
-    .testimonial-card:hover {
-        transform: translateY(-3px);
-        border-color: var(--blue);
+    .testimonial-stars {color: #ffc107;font-size: 1.1rem;margin-bottom: 10px;letter-spacing: 2px;}
+    .testimonial-text {font-size: 0.9rem;color: #d2e4ff;line-height: 1.6;margin-bottom: 15px;font-style: italic;}
+    .testimonial-author {font-weight: 750;font-size: 0.85rem;color: #fff;}
+    .testimonial-author span {color: var(--muted);font-size: 0.75rem;font-weight: normal;display: block;}
+
+    .banner{border:1px solid #21456d;border-radius:18px;padding:28px;background:linear-gradient(115deg,#0e2d50,#0b1b30);display:flex;justify-content:space-between;align-items:center;gap:24px}
+    .banner h2{margin:0 0 8px}
+    .banner p{color:#b7c8dc;margin:0;line-height:1.6}
+
+    footer{border-top:1px solid var(--line);padding:30px 0;color:#91a5bd;font-size:.85rem;background:#06101e}
+    .footrow{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:center}
+    
+    @media(max-width:850px){
+        .categories{grid-template-columns:repeat(3,1fr)}
+        .products{grid-template-columns:repeat(2,minmax(0,1fr))}
+        .testimonials-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
     }
-    .testimonial-stars {
-        color: #ffc107;
-        font-size: 1.1rem;
-        margin-bottom: 10px;
-        letter-spacing: 2px;
-    }
-    .testimonial-text {
-        font-size: 0.9rem;
-        color: #d2e4ff;
-        line-height: 1.6;
-        margin-bottom: 15px;
-        font-style: italic;
-    }
-    .testimonial-author {
-        font-weight: 750;
-        font-size: 0.85rem;
-        color: #fff;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    .testimonial-author span {
-        color: var(--muted);
-        font-size: 0.75rem;
-        font-weight: normal;
-    }
-    @media(max-width: 850px) {
-        .testimonials-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-    }
-    @media(max-width: 560px) {
-        .testimonials-grid {
-            grid-template-columns: 1fr;
-        }
+    @media(max-width:560px){
+        .navlinks{display:none}
+        .categories{grid-template-columns:repeat(2,1fr)}
+        .products{grid-template-columns:1fr}
+        .testimonials-grid{grid-template-columns:1fr}
+        .banner{flex-direction:column;align-items:flex-start}
     }
 </style>
 </head>
 <body>
-<header><div class="wrap nav">
-<a aria-label="JNHL Commerce - página inicial" class="brand" href="#"><img alt="Logo oficial da JNHL Commerce" class="brand-logo" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/6/36SlAAAQAAAAEAAUufanVtYgAAAB5qdW1kYzJwYQARABCAAACqADibcQNjMnBhAAAAF4hqdW1iAAAAR2p1bWRjMm1hABEAEIAAAKoAOJtxA3VybjpjMnBhOjM4NjQ5YTRhLTIwNWEtOGIzYy1kNDdlLTQxMDkwOWI2YjY2ZgAAABMBanVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hd
+
+<header>
+    <div class="wrap nav">
+        <a class="brand" href="#">
+            <div class="brand-logo" style="display:flex;align-items:center;justify-content:center;font-weight:bold;color:#fff;font-size:1.2rem;">J</div>
+            <div>JNHL <span>Commerce</span></div>
+        </a>
+        <div class="navlinks">
+            <a href="#ofertas">Ofertas</a>
+            <a href="#categorias">Categorias</a>
+            <a href="#destaques">Destaques</a>
+            <a href="#contato">Atendimento</a>
+        </div>
+        <div class="top-social">
+            <a href="https://instagram.com" target="_blank" aria-label="Instagram">
+                <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+            </a>
+            <a href="https://tiktok.com" target="_blank" aria-label="TikTok">
+                <svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.04-.5z"></path></svg>
+            </a>
+            <a href="https://facebook.com" target="_blank" aria-label="Facebook">
+                <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+            </a>
+        </div>
+    </div>
+</header>
+
+<main>
+    <section class="hero">
+        <div class="wrap">
+            <div class="eyebrow">Novidade Exclusiva</div>
+            <h1>Descubra o melhor da <span>JNHL Commerce</span></h1>
+            <p>Qualidade, praticidade e os melhores preços para o seu dia a dia com entrega rápida e segura.</p>
+            <div class="searchbar">
+                <input type="text" placeholder="O que você está procurando hoje?">
+                <button class="btn">Buscar</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="categorias">
+        <div class="wrap">
+            <div class="sectionhead">
+                <div>
+                    <h2>Explore por Categorias</h2>
+                    <p class="sub">Encontre exatamente o que você precisa com facilidade.</p>
+                </div>
+            </div>
+            <div class="categories">
+                <div class="cat selected"><span class="emoji">🔥</span><span>Ofertas</span></div>
+                <div class="cat"><span class="emoji">📱</span><span>Eletrônicos</span></div>
+                <div class="cat"><span class="emoji">🏠</span><span>Casa &amp; Lar</span></div>
+                <div class="cat"><span class="emoji">✨</span><span>Beleza</span></div>
+                <div class="cat"><span class="emoji">⚽</span><span>Esportes</span></div>
+                <div class="cat"><span class="emoji">🎁</span><span>Novidades</span></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials-section">
+        <div class="wrap">
+            <div class="sectionhead">
+                <div>
+                    <h2>O que nossos clientes dizem</h2>
+                    <p class="sub">Confira a experiência de quem já comprou com a gente.</p>
+                </div>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div>
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-text">"Atendimento excelente e entrega super rápida! O produto chegou muito bem embalado e superou minhas expectativas."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        Mariana Silva <span>São Paulo, SP</span>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div>
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-text">"Comprei pelo WhatsApp e fui atendido na mesma hora com muita clareza. Recomendo demais a JNHL Commerce!"</p>
+                    </div>
+                    <div class="testimonial-author">
+                        Carlos Eduardo <span>Belo Horizonte, MG</span>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div>
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-text">"Melhores preços que encontrei na internet. Produtos originais e de altíssima qualidade. Virei cliente fiel!"</p>
+                    </div>
+                    <div class="testimonial-author">
+                        Juliana Costa <span>Curitiba, PR</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="ofertas">
+        <div class="wrap">
+            <div class="sectionhead">
+                <div>
+                    <h2>Produtos em Destaque</h2>
+                    <p class="sub">Confira os itens mais procurados da nossa loja.</p>
+                </div>
+            </div>
+            <div class="products">
+                <div class="product">
+                    <div class="product-photo">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="#1688ff" stroke-width="1.5"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                    </div>
+                    <div class="product-body">
+                        <span class="tag">Tecnologia</span>
+                        <h3>Smartphone de Alta Performance</h3>
+                        <span class="product-price">R$ 1.299,00</span>
+                        <p>Tela ampla, bateria de longa duração e câmera com alta resolução para seus registros.</p>
+                        <button class="btn">Comprar Agora</button>
+                    </div>
+                </div>
+                <div class="product">
+                    <div class="product-photo">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="#1688ff" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    </div>
+                    <div class="product-body">
+                        <span class="tag">Casa &amp; Conforto</span>
+                        <h3>Kit Lâmpadas Inteligentes Wi-Fi</h3>
+                        <span class="product-price">R$ 149,90</span>
+                        <p>Controle a iluminação da sua casa diretamente pelo celular ou por comando de voz.</p>
+                        <button class="btn">Comprar Agora</button>
+                    </div>
+                </div>
+                <div class="product">
+                    <div class="product-photo">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="#1688ff" stroke-width="1.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+                    </div>
+                    <div class="product-body">
+                        <span class="tag">Eletroportáteis</span>
+                        <h3>Cafeteira Elétrica Moderna</h3>
+                        <span class="product-price">R$ 219,00</span>
+                        <p>Café quentinho e saboroso a qualquer hora do dia com praticidade incomparável.</p>
+                        <button class="btn">Comprar Agora</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="wrap footrow">
+        <div>
+            <strong>JNHL Commerce</strong>
+            <p style="margin:4px 0 0">Sua loja de confiança para escolhas inteligentes.</p>
+        </div>
+        <div>
+            <p style="margin:0">&copy; 2026 JNHL Commerce. Todos os direitos reservados.</p>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
