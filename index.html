@@ -290,7 +290,9 @@
     .cat:hover,.cat.selected{border-color:#00baff;box-shadow:0 0 20px #009dff20;transform:translateY(-3px)}
     .products{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
     .product{background:#04142b;border:1px solid #07518c;border-radius:14px;box-shadow:0 10px 25px #0003}
-    .product-photo{height:190px;background:linear-gradient(145deg,#e8f3ff,#fff);padding:9px}
+    .product-photo{height:190px;background:linear-gradient(145deg,#e8f3ff,#fff);padding:9px;position:relative}
+    .store-badge{position:absolute;top:8px;left:8px;z-index:2;max-width:calc(100% - 16px);padding:5px 8px;border:1px solid #31506b;border-radius:7px;background:rgba(4,20,43,.92);color:#d8eaff;font-size:.62rem;font-weight:700;letter-spacing:.2px;line-height:1.2;text-transform:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:0 2px 8px #0003}
+    .product-art:not(.product-photo){position:relative}
     .product-art{height:190px}
     .product-body{padding:13px}
     .tag{font-size:.68rem;letter-spacing:.5px}
@@ -555,13 +557,15 @@ header .nav .top-social svg{width:17px;height:17px}
             image.loading = 'lazy';
             image.onerror = () => photo.replaceChildren(textElement('span', '🛍️'));
             photo.appendChild(image);
+            const storeName = (product.store_name || 'Não informado').trim();
+            const storeBadge = textElement('span', storeName === 'Não informado' ? 'Loja não informada' : storeName, 'store-badge');
+            photo.appendChild(storeBadge);
             card.appendChild(photo);
           } else {
             card.appendChild(textElement('div', '🛍️', 'product-art'));
           }
           const body = textElement('div', '', 'product-body');
           body.appendChild(textElement('span', product.category || 'Geral', 'tag'));
-          body.appendChild(textElement('span', 'Loja: ' + (product.store_name || 'Não informado'), 'tag'));
           body.appendChild(textElement('h3', product.name || 'Produto'));
           const priceText = formatPrice(product.price);
           if (priceText) body.appendChild(textElement('div', priceText, 'product-price'));
