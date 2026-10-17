@@ -561,6 +561,7 @@ header .nav .top-social svg{width:17px;height:17px}
           }
           const body = textElement('div', '', 'product-body');
           body.appendChild(textElement('span', product.category || 'Geral', 'tag'));
+          body.appendChild(textElement('span', 'Loja: ' + (product.store_name || 'Não informado'), 'tag'));
           body.appendChild(textElement('h3', product.name || 'Produto'));
           const priceText = formatPrice(product.price);
           if (priceText) body.appendChild(textElement('div', priceText, 'product-price'));
@@ -589,7 +590,7 @@ header .nav .top-social svg{width:17px;height:17px}
           if (!supabaseClient) supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
           const { data, error } = await supabaseClient
             .from('products')
-            .select('id, name, description, category, image_url, price, affiliate_url, active, created_at')
+            .select('id, name, description, category, store_name, image_url, price, affiliate_url, active, created_at')
             .eq('active', true)
             .order('created_at', { ascending: false });
           if (error) throw error;
