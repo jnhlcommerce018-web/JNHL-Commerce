@@ -102,6 +102,14 @@
           <option>Esporte e lazer</option>
           <option>Geral</option>
         </select>
+        <label for="storeName">Origem / loja do produto *</label>
+        <select id="storeName" required>
+          <option value="Não informado">Não informado</option>
+          <option value="Mercado Livre">Mercado Livre</option>
+          <option value="Shopee">Shopee</option>
+          <option value="Amazon">Amazon</option>
+          <option value="Outras lojas">Outras lojas</option>
+        </select>
         <label for="imageUrl">URL da imagem</label>
         <input id="imageUrl" type="url" placeholder="https://...">
         <label for="price">Preço (opcional, em reais)</label>
@@ -201,6 +209,7 @@
   function resetForm() {
     $('productForm').reset();
     $('productId').value = '';
+    $('storeName').value = 'Não informado';
     $('active').checked = true;
     $('formTitle').textContent = 'Cadastrar produto';
   }
@@ -395,6 +404,7 @@
         name: $('name').value.trim(),
         description: $('description').value.trim(),
         category: $('category').value,
+        store_name: $('storeName').value,
         image_url: imageUrl,
         price: rawPrice === '' ? null : Number(rawPrice),
         affiliate_url: affiliateUrl,
@@ -451,6 +461,7 @@
       card.className = 'product';
       addText(card, 'h3', product.name);
       addText(card, 'p', 'Categoria: ' + product.category);
+      addText(card, 'p', 'Origem: ' + (product.store_name || 'Não informado'));
       addText(card, 'p', 'Status: ' + (product.active ? 'Ativo' : 'Inativo'));
 
       const edit = document.createElement('button');
@@ -460,6 +471,7 @@
         $('name').value = product.name || '';
         $('description').value = product.description || '';
         $('category').value = product.category || 'Geral';
+        $('storeName').value = product.store_name || 'Não informado';
         $('imageUrl').value = product.image_url || '';
         $('price').value = product.price ?? '';
         $('affiliateUrl').value = product.affiliate_url || '';
