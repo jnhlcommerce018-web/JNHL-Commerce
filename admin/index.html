@@ -66,6 +66,12 @@
   </section>
 
   <section id="dashboard" class="hidden">
+    <div class="panel" id="discoveryPanel">
+      <h2>Produtos descobertos automaticamente</h2>
+      <p class="muted">Escolha um produto para preencher o cadastro manual. Confira a foto, o preço e o link de afiliado antes de publicar. A busca de catálogo pode não trazer essas informações.</p>
+      <button id="refreshDiscoveries" class="secondary" type="button">Atualizar descobertas</button>
+      <div id="discoveryList"></div>
+    </div>
     <div class="panel">
       <h2 id="formTitle">Cadastrar produto</h2>
       <form id="productForm">
@@ -180,7 +186,7 @@
       if (error) throw error;
       if (await checkAdmin()) {
         message('Login realizado.');
-        await loadProducts();
+        await Promise.all([loadProducts(), loadDiscoveries()]);
       }
     } catch (error) {
       message('Não foi possível entrar: ' + error.message);
@@ -221,6 +227,78 @@
       ? value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
       : 'Preço não identificado';
   }
+
+  function catalogCategory(domain) {
+    const d = String(domain || '').toUpperCase();
+    if (d.includes('HEADPHONE') || d.includes('PHONE') || d.includes('COMPUT')) return 'Tecnologia';
+    if (d.includes('KITCHEN') || d.includes('HOME') || d.includes('LIGHT')) return 'Casa e decoração';
+    if (d.includes('TOOL')) return 'Ferramentas';
+    if (d.includes('SHOE') || d.includes('BAG') || d.includes('CLOTH')) return 'Moda e acessórios';
+    if (d.includes('BEAUTY')) return 'Beleza e cuidados';
+    if (d.includes('SPORT') || d.includes('CAMP')) return 'Esporte e lazer';
+    return 'Geral';
+  }
+
+  async function loadDiscoveries() {
+    const list = $('discoveryList');
+    list.replaceChildren();
+    addText(list, 'p', 'Carregando produtos descobertos...');
+    if (!(await checkAdmin())) return;
+    const { data, error } = await db.from('affiliate_discovered_products')
+      .select('id,source,source_product_id,name,keyword,category,image_url,price,description,affiliate_url,status,product_url')
+      .eq('status', 'discovered')
+      .order('discovered_at', { ascending: false })
+      .limit(80);
+    list.replaceChildren();
+    if (error) {
+      addText(list, 'p', 'Não foi possível ler a fila: ' + error.message);
+      addText(list, 'p', 'Verifique a permissão de leitura para administradores no Supabase.').className = 'muted';
+      return;
+    }
+    if (!data || !data.length) {
+      addText(list, 'p', 'Nenhum produto descoberto visível para esta conta.').className = 'muted';
+      return;
+    }
+    addText(list, 'p', 'Exibindo até ' + data.length + ' produtos para revisão.').className = 'muted';
+    data.forEach(item => {
+      const card = document.createElement('article');
+      card.className = 'product';
+      addText(card, 'h3', item.name || 'Produto sem nome');
+      addText(card, 'p', 'Busca: ' + (item.keyword || '-') + ' | ID: ' + item.source_product_id);
+      addText(card, 'p', 'Preço: ' + formatPrice(item.price));
+      if (item.image_url && safeHttpUrl(item.image_url)) {
+        const img = document.createElement('img');
+        img.src = item.image_url;
+        img.alt = item.name || 'Produto';
+        img.loading = 'lazy';
+        img.referrerPolicy = 'no-referrer';
+        img.style.cssText = 'display:block;max-width:160px;max-height:160px;object-fit:contain;margin:8px 0';
+        card.appendChild(img);
+      } else {
+        addText(card, 'p', 'Foto não disponível: adicione a URL da imagem no cadastro.').className = 'muted';
+      }
+      const edit = document.createElement('button');
+      edit.type = 'button';
+      edit.textContent = 'Revisar no cadastro';
+      edit.addEventListener('click', () => {
+        resetForm();
+        $('name').value = String(item.name || '').slice(0, 180);
+        $('description').value = ''; // descrição de catálogo não é descrição comercial verificada
+        $('category').value = catalogCategory(item.category);
+        $('storeName').value = item.source && item.source.startsWith('mercadolivre') ? 'Mercado Livre' : 'Não informado';
+        $('imageUrl').value = safeHttpUrl(item.image_url) ? item.image_url : '';
+        $('price').value = item.price == null ? '' : item.price;
+        $('affiliateUrl').value = ''; // nunca preencher com URL de catálogo
+        $('active').checked = false;
+        $('formTitle').textContent = 'Revisar produto descoberto — confira todos os campos';
+        $('productForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        message('Confira dados, foto, preço e link de afiliado. Produto inativo por padrão.');
+      });
+      card.appendChild(edit);
+      list.appendChild(card);
+    });
+  }
+  $('refreshDiscoveries').addEventListener('click', loadDiscoveries);
 
   $('productForm').addEventListener('submit', async event => {
     event.preventDefault();
@@ -334,7 +412,7 @@
           message('Erro ao excluir: ' + deleteError.message);
         } else {
           message('Produto excluído.');
-          await loadProducts();
+          await Promise.all([loadProducts(), loadDiscoveries()]);
         }
       });
       card.appendChild(remove);
@@ -345,7 +423,7 @@
   }
 
   $('refresh').addEventListener('click', async () => {
-    await loadProducts();
+    await Promise.all([loadProducts(), loadDiscoveries()]);
   });
 
   $('logout').addEventListener('click', async () => {
@@ -362,7 +440,7 @@
     setTimeout(async () => {
       try {
         if (await checkAdmin()) {
-          await loadProducts();
+          await Promise.all([loadProducts(), loadDiscoveries()]);
         }
       } catch (error) {
         message('Erro de autenticação: ' + error.message);
@@ -371,7 +449,7 @@
   });
 
   checkAdmin().then(async isAdmin => {
-    if (isAdmin) await loadProducts();
+    if (isAdmin) await Promise.all([loadProducts(), loadDiscoveries()]);
   }).catch(error => {
     setLoggedIn(false);
     message('Erro ao verificar acesso: ' + error.message);
