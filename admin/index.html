@@ -138,6 +138,7 @@
   const $ = id => document.getElementById(id);
   const status = $('status');
   let loading = false;
+  let discoveryLoadVersion = 0;
 
   function message(text) { status.textContent = text; }
 
@@ -269,6 +270,7 @@
   }
 
   async function loadDiscoveries() {
+    const version = ++discoveryLoadVersion;
     const list = $('discoveryList');
     list.replaceChildren();
     addText(list, 'p', 'Carregando produtos descobertos...');
@@ -278,6 +280,7 @@
       .eq('status', 'discovered')
       .order('discovered_at', { ascending: false })
       .limit(500);
+    if (version !== discoveryLoadVersion) return;
     list.replaceChildren();
     if (error) {
       addText(list, 'p', 'Não foi possível ler a fila: ' + error.message);
@@ -297,7 +300,7 @@
     }
     const selected = chooseBalanced(unique, 80);
     const keywords = new Set(selected.map(x => x.keyword || 'Outros'));
-    addText(list, 'p',
+    const countLabel = addText(list, 'p',
       'Exibindo ' + selected.length + ' produtos únicos de ' + keywords.size +
       ' buscas diferentes. Produtos sem foto ou preço precisam de revisão manual.'
     ).className = 'muted';
@@ -433,6 +436,8 @@
             throw new Error('Atualização não confirmada na segunda leitura.');
           }
           card.remove();
+          const remaining = grid.querySelectorAll('article.product').length;
+          countLabel.textContent = 'Exibindo ' + remaining + ' produtos nesta lista. Produto rejeitado retirado da tela. Clique em Atualizar descobertas para consultar a fila novamente.';
           message('Produto rejeitado com sucesso: ' + (item.name || item.source_product_id) + '.');
           // Não recarregar a lista imediatamente: isso poderia ocultar a mensagem
           // e substituir o card por outro, dando a impressão de que não saiu.
@@ -589,16 +594,16 @@
     }
   });
 
-  db.auth.onAuthStateChange(() => {
-    setTimeout(async () => {
-      try {
-        if (await checkAdmin()) {
-          await Promise.all([loadProducts(), loadDiscoveries()]);
-        }
-      } catch (error) {
-        message('Erro de autenticação: ' + error.message);
-      }
-    }, 0);
+  // Renovação do token acontece ao rejeitar. Não recarregue a lista
+  // em TOKEN_REFRESHED: isso recriava o cartão durante o clique.
+  db.auth.onAuthStateChange((event) => {
+    if (event === 'SIGNED_OUT') {
+      discoveryLoadVersion++;
+      setLoggedIn(false);
+      return;
+    }
+    // Login manual já carrega as listas; a inicialização abaixo também.
+    // Ignorar TOKEN_REFRESHED, INITIAL_SESSION e SIGNED_IN evita recargas concorrentes.
   });
 
   checkAdmin().then(async isAdmin => {
