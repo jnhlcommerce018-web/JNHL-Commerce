@@ -67,6 +67,11 @@
 
   <section id="dashboard" class="hidden">
     <div class="panel">
+      <h2>Automações e Marketplaces</h2>
+      <p class="muted">Conecte sua conta do Mercado Livre com autorização segura. A conexão não publica produtos automaticamente.</p>
+      <button id="connectMercadoLivre" type="button">Conectar Mercado Livre</button>
+    </div>
+    <div class="panel">
       <h2>Importar produto por link</h2>
       <p class="muted">Cole um link HTTPS do Mercado Livre. O produto ficará pendente para revisão; não será publicado automaticamente.</p>
       <form id="importForm">
@@ -214,6 +219,49 @@
     $('formTitle').textContent = 'Cadastrar produto';
   }
   $('cancelEdit').addEventListener('click', resetForm);
+
+  $('connectMercadoLivre').addEventListener('click', async () => {
+    const button = $('connectMercadoLivre');
+    if (button.disabled) return;
+    button.disabled = true;
+    message('Preparando autorização do Mercado Livre...');
+
+    try {
+      if (!(await checkAdmin())) {
+        throw new Error('Entre com uma conta administradora.');
+      }
+
+      // O Supabase JS encaminha a sessão autenticada à Edge Function.
+      const { data, error } = await db.functions.invoke('mercadolivre-oauth-start', {
+        body: {}
+      });
+
+      if (error) {
+        let detail = error.message || 'Falha ao iniciar a conexão.';
+        try {
+          const payload = await error.context?.json?.();
+          if (payload?.error) detail = payload.error;
+        } catch (_) {}
+        throw new Error(detail);
+      }
+
+      if (!data?.ok || typeof data.auth_url !== 'string') {
+        throw new Error(data?.error || 'A função não retornou um link válido.');
+      }
+
+      const authorizationUrl = new URL(data.auth_url);
+      if (authorizationUrl.protocol !== 'https:' ||
+          authorizationUrl.hostname !== 'auth.mercadolivre.com.br') {
+        throw new Error('O servidor retornou um destino de autorização inesperado.');
+      }
+
+      message('Redirecionando para a autorização do Mercado Livre...');
+      window.location.assign(authorizationUrl.href);
+    } catch (error) {
+      message('Erro ao conectar Mercado Livre: ' + (error.message || String(error)));
+      button.disabled = false;
+    }
+  });
 
   $('importForm').addEventListener('submit', async event => {
     event.preventDefault();
