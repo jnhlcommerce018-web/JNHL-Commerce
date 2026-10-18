@@ -380,31 +380,57 @@
         reject.textContent = 'Rejeitando...';
         rejectFeedback.textContent = 'Verificando atualização no Supabase...';
         try {
-          const { data: { user }, error: authError } = await db.auth.getUser();
-          if (authError || !user) throw new Error('Sessão expirada. Saia e entre novamente no painel.');
+          // Renova a sessão antes de escrever; evita usar JWT antigo no navegador.
+          const { data: refreshed, error: refreshError } = await db.auth.refreshSession();
+          if (refreshError || !refreshed?.session?.access_token) {
+            throw new Error('Sessão não renovada. Saia e entre novamente. ' + (refreshError?.message || ''));
+          }
+          const session = refreshed.session;
           if (!(await checkAdmin())) throw new Error('Conta sem acesso administrativo.');
           if (item.id === null || item.id === undefined || item.id === '') {
             throw new Error('Produto sem ID interno do banco.');
           }
-          const { data: updated, error: updateError } = await db
-            .from('affiliate_discovered_products')
-            .update({ status: 'rejected' })
-            .eq('id', item.id)
-            .eq('status', 'discovered')
-            .select('id,status');
-          if (updateError) throw new Error('Supabase: ' + updateError.message + ' (código ' + (updateError.code || '-') + ')');
-          if (!Array.isArray(updated) || updated.length !== 1 || updated[0].status !== 'rejected') {
-            throw new Error('O Supabase não confirmou a atualização. Possível bloqueio de permissão (RLS) ou registro já alterado. ID: ' + item.id);
+          // Requisição REST explícita com o JWT da conta logada (nunca service_role).
+          const endpoint = new URL(SUPABASE_URL + '/rest/v1/affiliate_discovered_products');
+          endpoint.searchParams.set('id', 'eq.' + String(item.id));
+          endpoint.searchParams.set('status', 'eq.discovered');
+          endpoint.searchParams.set('select', 'id,status');
+          const response = await fetch(endpoint.toString(), {
+            method: 'PATCH',
+            headers: {
+              'apikey': SUPABASE_KEY,
+              'Authorization': 'Bearer ' + session.access_token,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=representation'
+            },
+            body: JSON.stringify({ status: 'rejected' })
+          });
+          const responseBody = await response.text();
+          let updated;
+          try { updated = responseBody ? JSON.parse(responseBody) : []; }
+          catch { throw new Error('Resposta inesperada do Supabase (HTTP ' + response.status + ').'); }
+          if (!response.ok) {
+            throw new Error('Supabase HTTP ' + response.status + ': ' +
+              (updated?.message || updated?.error || responseBody.slice(0, 160)) +
+              ' (código ' + (updated?.code || '-') + ')');
           }
-          // Segunda leitura para garantir que o status ficou gravado.
-          const { data: confirmed, error: verifyError } = await db
-            .from('affiliate_discovered_products')
-            .select('id,status')
-            .eq('id', item.id)
-            .maybeSingle();
-          if (verifyError) throw new Error('Falha na conferência: ' + verifyError.message);
-          if (!confirmed || confirmed.status !== 'rejected') {
-            throw new Error('O status não foi confirmado no banco. Atualize a página e confira.');
+          if (!Array.isArray(updated) || updated.length !== 1 || updated[0].status !== 'rejected') {
+            const { data: { user: currentUser } } = await db.auth.getUser();
+            throw new Error('Nenhuma linha atualizada (HTTP ' + response.status + '). ' +
+              'Usuário da sessão: ' + (currentUser?.id || 'ausente') +
+              '. O registro pode estar invisível para UPDATE por RLS, ou já ter mudado. ID: ' + item.id);
+          }
+          // Confirma com o mesmo JWT usado para gravar.
+          const verifyUrl = new URL(SUPABASE_URL + '/rest/v1/affiliate_discovered_products');
+          verifyUrl.searchParams.set('id', 'eq.' + String(item.id));
+          verifyUrl.searchParams.set('select', 'id,status');
+          const verifyResponse = await fetch(verifyUrl.toString(), {
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + session.access_token }
+          });
+          if (!verifyResponse.ok) throw new Error('Falha ao confirmar atualização (HTTP ' + verifyResponse.status + ').');
+          const confirmed = await verifyResponse.json();
+          if (!Array.isArray(confirmed) || confirmed.length !== 1 || confirmed[0].status !== 'rejected') {
+            throw new Error('Atualização não confirmada na segunda leitura.');
           }
           card.remove();
           message('Produto rejeitado com sucesso: ' + (item.name || item.source_product_id) + '.');
