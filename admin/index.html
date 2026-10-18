@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Admin | JNHL Commerce</title>
+  <title>Admin | JNHL Commerce — Rejeição verificada</title>
   <style>
     :root {
       --navy: #071426;
@@ -370,31 +370,58 @@
       reject.style.marginLeft = '8px';
       reject.style.background = '#9f2534';
       reject.style.color = '#fff';
+      const rejectFeedback = document.createElement('p');
+      rejectFeedback.className = 'discovery-meta';
+      rejectFeedback.setAttribute('role', 'status');
       reject.addEventListener('click', async () => {
         if (!window.confirm('Rejeitar este produto? Ele sairá da fila, mas continuará registrado no banco.')) return;
         reject.disabled = true;
         edit.disabled = true;
         reject.textContent = 'Rejeitando...';
+        rejectFeedback.textContent = 'Verificando atualização no Supabase...';
         try {
-          if (!(await checkAdmin())) throw new Error('Acesso administrativo necessário.');
-          const { data: updated, error } = await db.from('affiliate_discovered_products')
+          const { data: { user }, error: authError } = await db.auth.getUser();
+          if (authError || !user) throw new Error('Sessão expirada. Saia e entre novamente no painel.');
+          if (!(await checkAdmin())) throw new Error('Conta sem acesso administrativo.');
+          if (item.id === null || item.id === undefined || item.id === '') {
+            throw new Error('Produto sem ID interno do banco.');
+          }
+          const { data: updated, error: updateError } = await db
+            .from('affiliate_discovered_products')
             .update({ status: 'rejected' })
             .eq('id', item.id)
             .eq('status', 'discovered')
-            .select('id');
-          if (error) throw error;
-          if (!updated || updated.length !== 1) throw new Error('Registro não atualizado. Confira as permissões do Supabase.');
+            .select('id,status');
+          if (updateError) throw new Error('Supabase: ' + updateError.message + ' (código ' + (updateError.code || '-') + ')');
+          if (!Array.isArray(updated) || updated.length !== 1 || updated[0].status !== 'rejected') {
+            throw new Error('O Supabase não confirmou a atualização. Possível bloqueio de permissão (RLS) ou registro já alterado. ID: ' + item.id);
+          }
+          // Segunda leitura para garantir que o status ficou gravado.
+          const { data: confirmed, error: verifyError } = await db
+            .from('affiliate_discovered_products')
+            .select('id,status')
+            .eq('id', item.id)
+            .maybeSingle();
+          if (verifyError) throw new Error('Falha na conferência: ' + verifyError.message);
+          if (!confirmed || confirmed.status !== 'rejected') {
+            throw new Error('O status não foi confirmado no banco. Atualize a página e confira.');
+          }
           card.remove();
-          message('Produto rejeitado e retirado da fila.');
-          await loadDiscoveries();
+          message('Produto rejeitado com sucesso: ' + (item.name || item.source_product_id) + '.');
+          // Não recarregar a lista imediatamente: isso poderia ocultar a mensagem
+          // e substituir o card por outro, dando a impressão de que não saiu.
         } catch (error) {
           reject.disabled = false;
           edit.disabled = false;
           reject.textContent = 'Rejeitar produto';
-          message('Erro ao rejeitar produto: ' + error.message);
+          const detail = error instanceof Error ? error.message : String(error);
+          rejectFeedback.textContent = 'Falha ao rejeitar: ' + detail;
+          rejectFeedback.style.color = '#ffb4b4';
+          message('Erro ao rejeitar produto: ' + detail);
         }
       });
       card.appendChild(reject);
+      card.appendChild(rejectFeedback);
       grid.appendChild(card);
     }
   }
