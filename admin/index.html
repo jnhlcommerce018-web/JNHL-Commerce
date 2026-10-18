@@ -67,29 +67,6 @@
 
   <section id="dashboard" class="hidden">
     <div class="panel">
-      <h2>Automações e Marketplaces</h2>
-      <p class="muted">Conecte sua conta do Mercado Livre com autorização segura. A conexão não publica produtos automaticamente.</p>
-      <button id="connectMercadoLivre" type="button">Conectar Mercado Livre</button>
-    </div>
-    <div class="panel">
-      <h2>Importar produto por link</h2>
-      <p class="muted">Cole um link HTTPS do Mercado Livre. O produto ficará pendente para revisão; não será publicado automaticamente.</p>
-      <form id="importForm">
-        <label for="sourceUrl">Link original do produto *</label>
-        <input id="sourceUrl" type="url" required placeholder="https://www.mercadolivre.com.br/...">
-        <label for="importAffiliateUrl">Seu link de afiliado *</label>
-        <input id="importAffiliateUrl" type="url" required placeholder="https://meli.la/...">
-        <button id="importSubmit" type="submit">Importar para revisão</button>
-      </form>
-    </div>
-
-    <div class="panel">
-      <h2>Produtos aguardando aprovação</h2>
-      <button id="refreshImports" class="secondary" type="button">Atualizar importações</button>
-      <div id="importList"></div>
-    </div>
-
-    <div class="panel">
       <h2 id="formTitle">Cadastrar produto</h2>
       <form id="productForm">
         <input id="productId" type="hidden">
@@ -149,7 +126,6 @@
   const $ = id => document.getElementById(id);
   const status = $('status');
   let loading = false;
-  let importing = false;
 
   function message(text) { status.textContent = text; }
 
@@ -204,7 +180,7 @@
       if (error) throw error;
       if (await checkAdmin()) {
         message('Login realizado.');
-        await Promise.all([loadProducts(), loadPendingImports()]);
+        await loadProducts();
       }
     } catch (error) {
       message('Não foi possível entrar: ' + error.message);
@@ -219,93 +195,6 @@
     $('formTitle').textContent = 'Cadastrar produto';
   }
   $('cancelEdit').addEventListener('click', resetForm);
-
-  $('connectMercadoLivre').addEventListener('click', async () => {
-    const button = $('connectMercadoLivre');
-    if (button.disabled) return;
-    button.disabled = true;
-    message('Preparando autorização do Mercado Livre...');
-
-    try {
-      if (!(await checkAdmin())) {
-        throw new Error('Entre com uma conta administradora.');
-      }
-
-      // O Supabase JS encaminha a sessão autenticada à Edge Function.
-      const { data, error } = await db.functions.invoke('mercadolivre-oauth-start', {
-        body: {}
-      });
-
-      if (error) {
-        let detail = error.message || 'Falha ao iniciar a conexão.';
-        try {
-          const payload = await error.context?.json?.();
-          if (payload?.error) detail = payload.error;
-        } catch (_) {}
-        throw new Error(detail);
-      }
-
-      if (!data?.ok || typeof data.auth_url !== 'string') {
-        throw new Error(data?.error || 'A função não retornou um link válido.');
-      }
-
-      const authorizationUrl = new URL(data.auth_url);
-      if (authorizationUrl.protocol !== 'https:' ||
-          authorizationUrl.hostname !== 'auth.mercadolivre.com.br') {
-        throw new Error('O servidor retornou um destino de autorização inesperado.');
-      }
-
-      message('Redirecionando para a autorização do Mercado Livre...');
-      window.location.assign(authorizationUrl.href);
-    } catch (error) {
-      message('Erro ao conectar Mercado Livre: ' + (error.message || String(error)));
-      button.disabled = false;
-    }
-  });
-
-  $('importForm').addEventListener('submit', async event => {
-    event.preventDefault();
-    if (importing) return;
-    importing = true;
-    $('importSubmit').disabled = true;
-    message('Enviando produto para importação...');
-
-    try {
-      if (!(await checkAdmin())) throw new Error('Entre com uma conta administradora.');
-
-      const url = $('sourceUrl').value.trim();
-      const affiliate_url = $('importAffiliateUrl').value.trim();
-      if (!safeHttpUrl(url) || !safeHttpUrl(affiliate_url)) {
-        throw new Error('Informe links HTTP ou HTTPS válidos.');
-      }
-
-      // Nome da Edge Function já publicada no projeto Supabase.
-      const { data, error } = await db.functions.invoke('swift-handler', {
-        body: { url, affiliate_url }
-      });
-      if (error) {
-        let details = error.message || 'Falha ao chamar a função.';
-        try {
-          const context = error.context;
-          if (context && typeof context.json === 'function') {
-            const payload = await context.json();
-            if (payload && payload.error) details = payload.error;
-          }
-        } catch (_) {}
-        throw new Error(details);
-      }
-      if (data && data.error) throw new Error(data.error);
-
-      $('importForm').reset();
-      message(data?.message || 'Importação enviada para revisão.');
-      await loadPendingImports();
-    } catch (error) {
-      message('Erro na importação: ' + (error.message || String(error)));
-    } finally {
-      importing = false;
-      $('importSubmit').disabled = false;
-    }
-  });
 
   function addText(parent, tag, text) {
     const element = document.createElement(tag);
@@ -332,101 +221,6 @@
       ? value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
       : 'Preço não identificado';
   }
-
-  async function loadPendingImports() {
-    const list = $('importList');
-    list.replaceChildren();
-    addText(list, 'p', 'Carregando importações pendentes...');
-
-    const { data, error } = await db
-      .from('product_imports')
-      .select('id, source, source_product_id, name, description, category, image_url, price, affiliate_url, status, created_at')
-      .eq('status', 'pending')
-      .order('created_at', { ascending: false });
-
-    list.replaceChildren();
-    if (error) {
-      addText(list, 'p', 'Não foi possível carregar a fila: ' + error.message);
-      addText(list, 'p', 'Confirme se o SQL de permissões de importação foi executado no Supabase.').className = 'muted';
-      return;
-    }
-
-    if (!data || data.length === 0) {
-      addText(list, 'p', 'Nenhum produto aguardando aprovação.').className = 'muted';
-      return;
-    }
-
-    data.forEach(item => {
-      const card = document.createElement('article');
-      card.className = 'product';
-      addText(card, 'h3', item.name || 'Produto sem nome');
-      addText(card, 'p', 'Origem: ' + (item.source || 'não identificada'));
-      addText(card, 'p', 'Preço: ' + formatPrice(item.price));
-      addText(card, 'p', item.description || 'Sem descrição extraída.');
-      if (item.image_url && safeHttpUrl(item.image_url)) {
-        const image = document.createElement('img');
-        image.src = item.image_url;
-        image.alt = item.name || 'Imagem do produto';
-        image.loading = 'lazy';
-        image.referrerPolicy = 'no-referrer';
-        image.style.cssText = 'display:block;max-width:180px;max-height:180px;object-fit:contain;border-radius:8px;margin:10px 0;';
-        card.appendChild(image);
-      }
-      addLink(card, item.affiliate_url, 'Abrir link de afiliado');
-      addLink(card, item.image_url, 'Ver imagem');
-
-      const approve = document.createElement('button');
-      approve.textContent = 'Aprovar e publicar';
-      approve.addEventListener('click', async () => {
-        if (!confirm('Aprovar e publicar "' + item.name + '" na loja pública?')) return;
-        approve.disabled = true;
-        try {
-          if (!(await checkAdmin())) throw new Error('Acesso administrativo necessário.');
-          const { data: approved, error: approveError } = await db.rpc('approve_product_import', {
-            p_import_id: item.id
-          });
-          if (approveError) throw approveError;
-          message('Produto aprovado e publicado. ID do produto: ' + (approved?.product_id ?? 'confirmado'));
-          await Promise.all([loadProducts(), loadPendingImports()]);
-        } catch (error) {
-          message('Não foi possível aprovar: ' + (error.message || String(error)));
-          approve.disabled = false;
-        }
-      });
-      card.appendChild(approve);
-
-      const reject = document.createElement('button');
-      reject.textContent = 'Rejeitar';
-      reject.className = 'danger';
-      reject.addEventListener('click', async () => {
-        if (!confirm('Rejeitar a importação de "' + item.name + '"? Ela não será publicada.')) return;
-        reject.disabled = true;
-        try {
-          if (!(await checkAdmin())) throw new Error('Acesso administrativo necessário.');
-          const { data: { user }, error: userError } = await db.auth.getUser();
-          if (userError || !user) throw new Error('Sessão expirada. Entre novamente.');
-          const { data: updated, error: updateError } = await db
-            .from('product_imports')
-            .update({ status: 'rejected', reviewed_by: user.id, reviewed_at: new Date().toISOString(), updated_at: new Date().toISOString() })
-            .eq('id', item.id)
-            .eq('status', 'pending')
-            .select('id')
-            .maybeSingle();
-          if (updateError) throw updateError;
-          if (!updated) throw new Error('A importação já foi processada ou não existe mais.');
-          message('Importação rejeitada. Nenhum produto foi publicado.');
-          await loadPendingImports();
-        } catch (error) {
-          message('Não foi possível rejeitar: ' + (error.message || String(error)));
-          reject.disabled = false;
-        }
-      });
-      card.appendChild(reject);
-      list.appendChild(card);
-    });
-  }
-
-  $('refreshImports').addEventListener('click', loadPendingImports);
 
   $('productForm').addEventListener('submit', async event => {
     event.preventDefault();
@@ -551,7 +345,7 @@
   }
 
   $('refresh').addEventListener('click', async () => {
-    await Promise.all([loadProducts(), loadPendingImports()]);
+    await loadProducts();
   });
 
   $('logout').addEventListener('click', async () => {
@@ -560,9 +354,7 @@
     else {
       setLoggedIn(false);
       resetForm();
-      $('importForm').reset();
-      $('importList').replaceChildren();
-      message('Você saiu da conta.');
+          message('Você saiu da conta.');
     }
   });
 
@@ -570,7 +362,7 @@
     setTimeout(async () => {
       try {
         if (await checkAdmin()) {
-          await Promise.all([loadProducts(), loadPendingImports()]);
+          await loadProducts();
         }
       } catch (error) {
         message('Erro de autenticação: ' + error.message);
@@ -579,7 +371,7 @@
   });
 
   checkAdmin().then(async isAdmin => {
-    if (isAdmin) await Promise.all([loadProducts(), loadPendingImports()]);
+    if (isAdmin) await loadProducts();
   }).catch(error => {
     setLoggedIn(false);
     message('Erro ao verificar acesso: ' + error.message);
