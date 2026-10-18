@@ -364,6 +364,37 @@
         message('Produto preparado para revisão. Não será publicado automaticamente.');
       });
       card.appendChild(edit);
+      const reject = document.createElement('button');
+      reject.type = 'button';
+      reject.textContent = 'Rejeitar produto';
+      reject.style.marginLeft = '8px';
+      reject.style.background = '#9f2534';
+      reject.style.color = '#fff';
+      reject.addEventListener('click', async () => {
+        if (!window.confirm('Rejeitar este produto? Ele sairá da fila, mas continuará registrado no banco.')) return;
+        reject.disabled = true;
+        edit.disabled = true;
+        reject.textContent = 'Rejeitando...';
+        try {
+          if (!(await checkAdmin())) throw new Error('Acesso administrativo necessário.');
+          const { data: updated, error } = await db.from('affiliate_discovered_products')
+            .update({ status: 'rejected' })
+            .eq('id', item.id)
+            .eq('status', 'discovered')
+            .select('id');
+          if (error) throw error;
+          if (!updated || updated.length !== 1) throw new Error('Registro não atualizado. Confira as permissões do Supabase.');
+          card.remove();
+          message('Produto rejeitado e retirado da fila.');
+          await loadDiscoveries();
+        } catch (error) {
+          reject.disabled = false;
+          edit.disabled = false;
+          reject.textContent = 'Rejeitar produto';
+          message('Erro ao rejeitar produto: ' + error.message);
+        }
+      });
+      card.appendChild(reject);
       grid.appendChild(card);
     }
   }
