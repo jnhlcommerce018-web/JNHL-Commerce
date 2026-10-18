@@ -44,6 +44,11 @@
       padding: 14px; margin: 12px 0; overflow-wrap: anywhere;
     }
     .hidden { display: none !important; }
+    .discovery-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px; }
+    .discovery-grid .product { margin:0; }
+    .discovery-photo { width:150px; height:150px; object-fit:contain; background:#fff; border-radius:8px; margin:8px 0; }
+    .discovery-meta { font-size:13px; color:var(--muted); overflow-wrap:anywhere; }
+    .review-note { padding:12px; border:1px solid var(--line); border-radius:8px; color:#d9e7f8; margin-bottom:12px; }
     #status { white-space: pre-wrap; }
   </style>
 </head>
@@ -76,6 +81,7 @@
       <h2 id="formTitle">Cadastrar produto</h2>
       <form id="productForm">
         <input id="productId" type="hidden">
+        <div id="reviewNote" class="review-note hidden"></div>
         <label for="name">Nome do produto *</label>
         <input id="name" required maxlength="180">
         <label for="description">Descrição</label>
@@ -199,6 +205,8 @@
     $('storeName').value = 'Não informado';
     $('active').checked = true;
     $('formTitle').textContent = 'Cadastrar produto';
+    $('reviewNote').textContent = '';
+    $('reviewNote').classList.add('hidden');
   }
   $('cancelEdit').addEventListener('click', resetForm);
 
@@ -239,6 +247,27 @@
     return 'Geral';
   }
 
+  function discoveryKey(item) {
+    return String(item.source || '') + ':' + String(item.source_product_id || item.id);
+  }
+
+  function chooseBalanced(items, maxCount) {
+    const groups = new Map();
+    for (const item of items) {
+      const key = (item.keyword || 'Outros').trim().toLowerCase();
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(item);
+    }
+    const result = [];
+    while (result.length < maxCount && [...groups.values()].some(g => g.length)) {
+      for (const group of groups.values()) {
+        if (result.length >= maxCount) break;
+        if (group.length) result.push(group.shift());
+      }
+    }
+    return result;
+  }
+
   async function loadDiscoveries() {
     const list = $('discoveryList');
     list.replaceChildren();
@@ -248,34 +277,66 @@
       .select('id,source,source_product_id,name,keyword,category,image_url,price,description,affiliate_url,status,product_url')
       .eq('status', 'discovered')
       .order('discovered_at', { ascending: false })
-      .limit(80);
+      .limit(500);
     list.replaceChildren();
     if (error) {
       addText(list, 'p', 'Não foi possível ler a fila: ' + error.message);
-      addText(list, 'p', 'Verifique a permissão de leitura para administradores no Supabase.').className = 'muted';
       return;
     }
-    if (!data || !data.length) {
+    const unique = [];
+    const seen = new Set();
+    for (const item of data || []) {
+      const key = discoveryKey(item);
+      if (seen.has(key)) continue;
+      seen.add(key);
+      unique.push(item);
+    }
+    if (!unique.length) {
       addText(list, 'p', 'Nenhum produto descoberto visível para esta conta.').className = 'muted';
       return;
     }
-    addText(list, 'p', 'Exibindo até ' + data.length + ' produtos para revisão.').className = 'muted';
-    data.forEach(item => {
+    const selected = chooseBalanced(unique, 80);
+    const keywords = new Set(selected.map(x => x.keyword || 'Outros'));
+    addText(list, 'p',
+      'Exibindo ' + selected.length + ' produtos únicos de ' + keywords.size +
+      ' buscas diferentes. Produtos sem foto ou preço precisam de revisão manual.'
+    ).className = 'muted';
+
+    const grid = document.createElement('div');
+    grid.className = 'discovery-grid';
+    list.appendChild(grid);
+    for (const item of selected) {
       const card = document.createElement('article');
       card.className = 'product';
       addText(card, 'h3', item.name || 'Produto sem nome');
-      addText(card, 'p', 'Busca: ' + (item.keyword || '-') + ' | ID: ' + item.source_product_id);
+      addText(card, 'p', 'Busca: ' + (item.keyword || '-') +
+        ' | Código de origem: ' + (item.source_product_id || '-')).className = 'discovery-meta';
       addText(card, 'p', 'Preço: ' + formatPrice(item.price));
-      if (item.image_url && safeHttpUrl(item.image_url)) {
+      const image = String(item.image_url || '').trim();
+      if (safeHttpUrl(image)) {
         const img = document.createElement('img');
-        img.src = item.image_url;
+        img.src = image;
         img.alt = item.name || 'Produto';
         img.loading = 'lazy';
         img.referrerPolicy = 'no-referrer';
-        img.style.cssText = 'display:block;max-width:160px;max-height:160px;object-fit:contain;margin:8px 0';
+        img.className = 'discovery-photo';
+        img.addEventListener('error', () => {
+          img.remove();
+          addText(card, 'p', 'Imagem indisponível ou quebrada.').className = 'muted';
+        }, { once: true });
         card.appendChild(img);
       } else {
-        addText(card, 'p', 'Foto não disponível: adicione a URL da imagem no cadastro.').className = 'muted';
+        addText(card, 'p', 'Sem foto confirmada.').className = 'muted';
+      }
+      if (item.description) {
+        const description = item.description.length > 170
+          ? item.description.slice(0, 170) + '…' : item.description;
+        addText(card, 'p', description).className = 'discovery-meta';
+      } else {
+        addText(card, 'p', 'Descrição não fornecida pela busca.').className = 'discovery-meta';
+      }
+      if (safeHttpUrl(item.product_url)) {
+        addLink(card, item.product_url, 'Ver referência');
       }
       const edit = document.createElement('button');
       edit.type = 'button';
@@ -283,20 +344,28 @@
       edit.addEventListener('click', () => {
         resetForm();
         $('name').value = String(item.name || '').slice(0, 180);
-        $('description').value = ''; // descrição de catálogo não é descrição comercial verificada
+        $('description').value = String(item.description || '');
         $('category').value = catalogCategory(item.category);
-        $('storeName').value = item.source && item.source.startsWith('mercadolivre') ? 'Mercado Livre' : 'Não informado';
+        $('storeName').value = String(item.source || '').toLowerCase().includes('mercado')
+          ? 'Mercado Livre' : String(item.source || '').toLowerCase().includes('shopee')
+          ? 'Shopee' : 'Não informado';
         $('imageUrl').value = safeHttpUrl(item.image_url) ? item.image_url : '';
         $('price').value = item.price == null ? '' : item.price;
-        $('affiliateUrl').value = ''; // nunca preencher com URL de catálogo
+        $('affiliateUrl').value = '';
         $('active').checked = false;
-        $('formTitle').textContent = 'Revisar produto descoberto — confira todos os campos';
+        $('formTitle').textContent = 'Revisar produto descoberto';
+        $('reviewNote').textContent =
+          'Código de origem: ' + (item.source_product_id || '-') +
+          ' | Busca: ' + (item.keyword || '-') +
+          '. Este código é uma referência do marketplace, não o ID interno da loja. ' +
+          'Confira a imagem, complete a descrição e insira seu link de afiliado válido.';
+        $('reviewNote').classList.remove('hidden');
         $('productForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        message('Confira dados, foto, preço e link de afiliado. Produto inativo por padrão.');
+        message('Produto preparado para revisão. Não será publicado automaticamente.');
       });
       card.appendChild(edit);
-      list.appendChild(card);
-    });
+      grid.appendChild(card);
+    }
   }
   $('refreshDiscoveries').addEventListener('click', loadDiscoveries);
 
