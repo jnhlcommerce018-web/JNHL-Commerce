@@ -77,6 +77,32 @@
       <button id="refreshDiscoveries" class="secondary" type="button">Atualizar descobertas</button>
       <div id="discoveryList"></div>
     </div>
+    <div class="panel" id="apiIntakePanel">
+      <h2>Enviar produto para nossa API</h2>
+      <p class="muted">Recebe produtos para revisão em uma fila separada. Não publica na loja e não altera o cadastro manual.</p>
+      <form id="apiIntakeForm">
+        <label for="apiName">Nome do produto *</label>
+        <input id="apiName" maxlength="300" required>
+        <label for="apiSource">Origem *</label>
+        <select id="apiSource" required>
+          <option value="mercadolivre">Mercado Livre</option>
+          <option value="shopee">Shopee</option>
+          <option value="outro">Outra loja</option>
+        </select>
+        <label for="apiPrice">Preço em reais *</label>
+        <input id="apiPrice" type="number" min="0.01" step="0.01" required>
+        <label for="apiProductUrl">Link da página do produto *</label>
+        <input id="apiProductUrl" type="url" placeholder="https://..." required>
+        <label for="apiImageUrl">Link direto da imagem *</label>
+        <input id="apiImageUrl" type="url" placeholder="https://..." required>
+        <label for="apiAffiliateUrl">Seu link de afiliado *</label>
+        <input id="apiAffiliateUrl" type="url" placeholder="https://..." required>
+        <button type="submit" id="apiSendButton">Enviar para API (não publicar)</button>
+        <button type="reset" class="secondary">Limpar campos da API</button>
+      </form>
+      <p id="apiIntakeStatus" role="status" aria-live="polite"></p>
+    </div>
+
     <div class="panel">
       <h2 id="formTitle">Cadastrar produto</h2>
       <form id="productForm">
@@ -457,6 +483,75 @@
     }
   }
   $('refreshDiscoveries').addEventListener('click', loadDiscoveries);
+
+  // Integração independente: usa o login atual, sem expor tokens na tela.
+  // O nome técnico da Edge Function implantada é "quick-worker".
+  const API_FUNCTION_URL = SUPABASE_URL + '/functions/v1/quick-worker';
+  let apiSending = false;
+
+  $('apiIntakeForm').addEventListener('submit', async event => {
+    event.preventDefault();
+    if (apiSending) return;
+    const feedback = $('apiIntakeStatus');
+    const button = $('apiSendButton');
+    apiSending = true;
+    button.disabled = true;
+    feedback.textContent = 'Enviando para a fila de revisão...';
+    try {
+      if (!(await checkAdmin())) throw new Error('Faça login como administrador.');
+      const { data: sessionData, error: sessionError } = await db.auth.getSession();
+      if (sessionError) throw sessionError;
+      if (!sessionData.session?.access_token) throw new Error('Sessão expirada. Entre novamente.');
+
+      const isHttps = value => {
+        try {
+          const url = new URL(value);
+          return url.protocol === 'https:' && !url.username && !url.password;
+        } catch { return false; }
+      };
+
+      const product = {
+        name: $('apiName').value.trim(),
+        source: $('apiSource').value,
+        price: Number($('apiPrice').value),
+        currency: 'BRL',
+        product_url: $('apiProductUrl').value.trim(),
+        image_url: $('apiImageUrl').value.trim(),
+        affiliate_url: $('apiAffiliateUrl').value.trim()
+      };
+      if (!product.name || product.name.length > 300 ||
+          !Number.isFinite(product.price) || product.price <= 0 ||
+          ![product.product_url, product.image_url, product.affiliate_url].every(isHttps)) {
+        throw new Error('Preencha nome, preço positivo e os três links HTTPS válidos.');
+      }
+
+      const response = await fetch(API_FUNCTION_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_KEY,
+          'Authorization': 'Bearer ' + sessionData.session.access_token
+        },
+        body: JSON.stringify(product)
+      });
+      const raw = await response.text();
+      let result;
+      try { result = JSON.parse(raw); }
+      catch { throw new Error('Resposta inválida da API (HTTP ' + response.status + ').'); }
+      if (!response.ok || !result.ok) {
+        throw new Error((result.error || result.message || 'Falha na API') +
+          ' (HTTP ' + response.status + ').');
+      }
+      feedback.textContent = 'Produto recebido! ID ' + result.product.id +
+        ' — aguardando revisão. Não foi publicado.';
+      $('apiIntakeForm').reset();
+    } catch (error) {
+      feedback.textContent = 'Erro ao enviar: ' + (error?.message || String(error));
+    } finally {
+      apiSending = false;
+      button.disabled = false;
+    }
+  });
 
   $('productForm').addEventListener('submit', async event => {
     event.preventDefault();
