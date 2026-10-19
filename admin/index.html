@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Admin | JNHL Commerce — Rejeição verificada</title>
+  <title>Admin | JNHL Commerce — API e revisão</title>
   <style>
     :root {
       --navy: #071426;
@@ -101,6 +101,14 @@
         <button type="reset" class="secondary">Limpar campos da API</button>
       </form>
       <p id="apiIntakeStatus" role="status" aria-live="polite"></p>
+    </div>
+
+    <div class="panel" id="apiReviewPanel">
+      <h2>Produtos recebidos pela API — Revisão</h2>
+      <p class="muted">Aprovar ou rejeitar aqui muda apenas o status da fila da API. Aprovar NÃO publica na loja.</p>
+      <button type="button" class="secondary" id="refreshApiQueue">Atualizar fila da API</button>
+      <p id="apiReviewFeedback" role="status" aria-live="polite"></p>
+      <div id="apiReviewList"></div>
     </div>
 
     <div class="panel">
@@ -219,7 +227,7 @@
       if (error) throw error;
       if (await checkAdmin()) {
         message('Login realizado.');
-        await Promise.all([loadProducts(), loadDiscoveries()]);
+        await Promise.all([loadProducts(), loadDiscoveries(), loadApiQueue()]);
       }
     } catch (error) {
       message('Não foi possível entrar: ' + error.message);
@@ -484,6 +492,105 @@
   }
   $('refreshDiscoveries').addEventListener('click', loadDiscoveries);
 
+  // Fila independente da API. Alterações só no status de jnhl_product_intake.
+  let apiQueueBusy = false;
+  async function loadApiQueue() {
+    const list = $('apiReviewList');
+    const feedback = $('apiReviewFeedback');
+    list.replaceChildren();
+    feedback.textContent = 'Carregando fila...';
+    try {
+      if (!(await checkAdmin())) throw new Error('Faça login como administrador.');
+      const { data, error } = await db.from('jnhl_product_intake')
+        .select('id,name,source,price,currency,product_url,image_url,affiliate_url,status,created_at')
+        .eq('status', 'pending_review').order('created_at', { ascending: true }).limit(100);
+      if (error) throw error;
+      feedback.textContent = (data?.length || 0) + ' produto(s) aguardando revisão.';
+      if (!data?.length) return;
+      for (const item of data) {
+        const card = document.createElement('article');
+        card.className = 'product';
+        const title = document.createElement('h3');
+        title.textContent = item.name + ' — ID ' + item.id;
+        card.appendChild(title);
+        const info = document.createElement('p');
+        info.className = 'muted';
+        info.textContent = 'Origem: ' + item.source + ' | Preço: ' +
+          Number(item.price).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        card.appendChild(info);
+        if (item.image_url) {
+          const img = document.createElement('img');
+          img.src = item.image_url;
+          img.alt = 'Imagem do produto: ' + item.name;
+          img.loading = 'lazy';
+          img.className = 'discovery-photo';
+          img.referrerPolicy = 'no-referrer';
+          card.appendChild(img);
+        }
+        const links = document.createElement('p');
+        for (const [label, url] of [
+          ['Ver produto', item.product_url], ['Ver imagem', item.image_url],
+          ['Conferir link de afiliado', item.affiliate_url]
+        ]) {
+          try {
+            const parsed = new URL(url);
+            if (parsed.protocol !== 'https:') continue;
+            const a = document.createElement('a');
+            a.href = parsed.href;
+            a.textContent = label;
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+            a.style.cssText = 'color:#9dd0ff;display:inline-block;margin:4px 14px 4px 0';
+            links.appendChild(a);
+          } catch { /* link inválido: não mostrar */ }
+        }
+        card.appendChild(links);
+        const approve = document.createElement('button');
+        approve.type = 'button';
+        approve.textContent = 'Aprovar (sem publicar)';
+        const reject = document.createElement('button');
+        reject.type = 'button';
+        reject.textContent = 'Rejeitar';
+        reject.className = 'danger';
+        const result = document.createElement('p');
+        result.setAttribute('role', 'status');
+        async function decide(nextStatus) {
+          if (apiQueueBusy) return;
+          const verb = nextStatus === 'approved' ? 'aprovar' : 'rejeitar';
+          if (!confirm('Deseja ' + verb + ' o produto ID ' + item.id + '? Isso não publica nem exclui produtos da loja.')) return;
+          apiQueueBusy = true;
+          approve.disabled = reject.disabled = true;
+          result.textContent = 'Salvando decisão...';
+          try {
+            if (!(await checkAdmin())) throw new Error('Acesso administrativo necessário.');
+            const { data: updated, error } = await db.from('jnhl_product_intake')
+              .update({ status: nextStatus })
+              .eq('id', item.id).eq('status', 'pending_review')
+              .select('id,status');
+            if (error) throw error;
+            if (!updated || updated.length !== 1 || updated[0].status !== nextStatus) {
+              throw new Error('O banco não confirmou a alteração. Confira as permissões do SQL.');
+            }
+            card.remove();
+            feedback.textContent = 'Produto ID ' + item.id + ' ' +
+              (nextStatus === 'approved' ? 'aprovado' : 'rejeitado') +
+              '. Não foi publicado. Clique em Atualizar fila para conferir os restantes.';
+          } catch (err) {
+            result.textContent = 'Erro: ' + (err?.message || String(err));
+            approve.disabled = reject.disabled = false;
+          } finally { apiQueueBusy = false; }
+        }
+        approve.addEventListener('click', () => decide('approved'));
+        reject.addEventListener('click', () => decide('rejected'));
+        card.append(approve, reject, result);
+        list.appendChild(card);
+      }
+    } catch (err) {
+      feedback.textContent = 'Erro ao carregar fila: ' + (err?.message || String(err));
+    }
+  }
+  $('refreshApiQueue').addEventListener('click', loadApiQueue);
+
   // Integração independente: usa o login atual, sem expor tokens na tela.
   // O nome técnico da Edge Function implantada é "quick-worker".
   const API_FUNCTION_URL = SUPABASE_URL + '/functions/v1/quick-worker';
@@ -545,6 +652,7 @@
       feedback.textContent = 'Produto recebido! ID ' + result.product.id +
         ' — aguardando revisão. Não foi publicado.';
       $('apiIntakeForm').reset();
+      await loadApiQueue();
     } catch (error) {
       feedback.textContent = 'Erro ao enviar: ' + (error?.message || String(error));
     } finally {
@@ -665,7 +773,7 @@
           message('Erro ao excluir: ' + deleteError.message);
         } else {
           message('Produto excluído.');
-          await Promise.all([loadProducts(), loadDiscoveries()]);
+          await Promise.all([loadProducts(), loadDiscoveries(), loadApiQueue()]);
         }
       });
       card.appendChild(remove);
@@ -676,7 +784,7 @@
   }
 
   $('refresh').addEventListener('click', async () => {
-    await Promise.all([loadProducts(), loadDiscoveries()]);
+    await Promise.all([loadProducts(), loadDiscoveries(), loadApiQueue()]);
   });
 
   $('logout').addEventListener('click', async () => {
@@ -702,7 +810,7 @@
   });
 
   checkAdmin().then(async isAdmin => {
-    if (isAdmin) await Promise.all([loadProducts(), loadDiscoveries()]);
+    if (isAdmin) await Promise.all([loadProducts(), loadDiscoveries(), loadApiQueue()]);
   }).catch(error => {
     setLoggedIn(false);
     message('Erro ao verificar acesso: ' + error.message);
