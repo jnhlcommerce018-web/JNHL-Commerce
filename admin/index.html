@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Admin | JNHL Commerce — API multiplataforma e revisão</title>
+  <title>Admin | JNHL Commerce — API multiplataforma, revisão e CSV</title>
   <style>
     :root {
       --navy: #071426;
@@ -107,6 +107,18 @@
         <button type="reset" class="secondary">Limpar campos da API</button>
       </form>
       <p id="apiIntakeStatus" role="status" aria-live="polite"></p>
+    </div>
+
+    <div class="panel" id="csvImportPanel">
+      <h2>Importar produtos em lote (CSV)</h2>
+      <p class="muted">Importe uma planilha exportada de uma fonte autorizada. O sistema confere os links, ignora repetidos e envia para a API. Nenhum produto é publicado.</p>
+      <label for="csvFile">Arquivo CSV (UTF-8, separado por vírgula ou ponto e vírgula)</label>
+      <input type="file" id="csvFile" accept=".csv,text/csv,text/plain">
+      <button type="button" id="csvPreview" class="secondary">Conferir arquivo</button>
+      <button type="button" id="csvImport" disabled>Enviar válidos para a API</button>
+      <p id="csvFeedback" role="status" aria-live="polite"></p>
+      <div id="csvPreviewList"></div>
+      <p class="muted">Colunas obrigatórias: <code>name,source,price,product_url,image_url,affiliate_url</code>. Também aceita nomes em português (nome, origem, preco, link_produto, link_imagem, link_afiliado).</p>
     </div>
 
     <div class="panel" id="apiReviewPanel">
@@ -665,6 +677,156 @@
       apiSending = false;
       button.disabled = false;
     }
+  });
+
+  // Importador CSV: executado no navegador do administrador, sem guardar senhas.
+  let csvReady = [];
+  let csvBusy = false;
+  const csvFeedback = $('csvFeedback');
+  function parseCsv(text) {
+    text = text.replace(/^\uFEFF/, '');
+    const first = text.split(/\r?\n/, 1)[0] || '';
+    const sep = (first.match(/;/g) || []).length > (first.match(/,/g) || []).length ? ';' : ',';
+    const rows = []; let row = [], cell = '', quoted = false;
+    for (let i = 0; i < text.length; i++) {
+      const c = text[i];
+      if (c === '"') {
+        if (quoted && text[i + 1] === '"') { cell += '"'; i++; }
+        else quoted = !quoted;
+      } else if (c === sep && !quoted) { row.push(cell); cell = ''; }
+      else if ((c === '\n' || c === '\r') && !quoted) {
+        if (c === '\r' && text[i + 1] === '\n') i++;
+        row.push(cell); if (row.some(x => x.trim())) rows.push(row);
+        row = []; cell = '';
+      } else cell += c;
+    }
+    if (quoted) throw new Error('CSV com aspas não fechadas.');
+    row.push(cell); if (row.some(x => x.trim())) rows.push(row);
+    return rows;
+  }
+  function normalizedHeader(h) {
+    return h.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[\s-]+/g, '_');
+  }
+  const csvAliases = {
+    name: ['name','nome','produto'], source: ['source','origem','plataforma'],
+    price: ['price','preco','valor'], product_url: ['product_url','link_produto','url_produto'],
+    image_url: ['image_url','link_imagem','url_imagem'],
+    affiliate_url: ['affiliate_url','link_afiliado','url_afiliado']
+  };
+  function csvHttps(s) {
+    try { const u = new URL(s); return u.protocol === 'https:' && !u.username && !u.password; }
+    catch { return false; }
+  }
+  function csvPrice(s) {
+    s = String(s || '').trim().replace(/R\$\s*/gi, '').replace(/\s/g, '');
+    if (s.includes(',') && s.includes('.')) s = s.lastIndexOf(',') > s.lastIndexOf('.')
+      ? s.replace(/\./g, '').replace(',', '.') : s.replace(/,/g, '');
+    else if (s.includes(',')) s = s.replace(',', '.');
+    return Number(s);
+  }
+  const allowedCsvSources = new Set(['mercadolivre','shopee','amazon','magalu','aliexpress','shein','temu','loja_propria','outro']);
+  function csvSource(value) {
+    const v = normalizedHeader(value).replace(/_/g, '');
+    if (['mercadolivre','ml'].includes(v)) return 'mercadolivre';
+    if (['magazine luiza','magazineluiza','magalu'].includes(v)) return 'magalu';
+    if (['loja propria','lojapropria'].includes(v)) return 'loja_propria';
+    return allowedCsvSources.has(v) ? v : (allowedCsvSources.has(normalizedHeader(value)) ? normalizedHeader(value) : '');
+  }
+  const csvKey = p => p.source + '|' + p.product_url.trim().replace(/\/$/, '').toLowerCase();
+  async function csvExistingKeys() {
+    const keys = new Set();
+    for (let start = 0; ; start += 1000) {
+      const { data, error } = await db.from('jnhl_product_intake')
+        .select('source,product_url').order('id', { ascending: true }).range(start, start + 999);
+      if (error) throw new Error('Não foi possível conferir duplicados: ' + error.message);
+      (data || []).forEach(p => keys.add(csvKey(p)));
+      if (!data || data.length < 1000) break;
+    }
+    return keys;
+  }
+  $('csvPreview').addEventListener('click', async () => {
+    csvReady = []; $('csvImport').disabled = true;
+    $('csvPreviewList').replaceChildren();
+    const file = $('csvFile').files?.[0];
+    if (!file) { csvFeedback.textContent = 'Escolha um CSV primeiro.'; return; }
+    if (file.size > 3 * 1024 * 1024) { csvFeedback.textContent = 'Arquivo maior que 3 MB. Divida em arquivos menores.'; return; }
+    $('csvPreview').disabled = true;
+    try {
+      if (!(await checkAdmin())) throw new Error('Entre como administrador.');
+      const rows = parseCsv(await file.text());
+      if (rows.length < 2) throw new Error('CSV vazio ou sem produtos.');
+      const headers = rows[0].map(normalizedHeader);
+      const indexes = {};
+      for (const [field, aliases] of Object.entries(csvAliases)) {
+        indexes[field] = headers.findIndex(h => aliases.includes(h));
+        if (indexes[field] < 0) throw new Error('Coluna obrigatória ausente: ' + field);
+      }
+      const existing = await csvExistingKeys();
+      const seen = new Set(); let invalid = 0, duplicate = 0;
+      for (const cells of rows.slice(1)) {
+        const get = field => String(cells[indexes[field]] || '').trim();
+        const p = {
+          name: get('name'), source: csvSource(get('source')), price: csvPrice(get('price')),
+          currency: 'BRL', product_url: get('product_url'),
+          image_url: get('image_url'), affiliate_url: get('affiliate_url')
+        };
+        if (!p.name || p.name.length > 300 || !p.source || !Number.isFinite(p.price) || p.price <= 0 ||
+            ![p.product_url, p.image_url, p.affiliate_url].every(csvHttps)) { invalid++; continue; }
+        const key = csvKey(p);
+        if (existing.has(key) || seen.has(key)) { duplicate++; continue; }
+        seen.add(key); csvReady.push(p);
+      }
+      csvFeedback.textContent = `${csvReady.length} válidos para importar; ${duplicate} repetidos ignorados; ${invalid} inválidos ignorados. Confira os links antes de enviar.`;
+      const ul = document.createElement('ul');
+      csvReady.slice(0, 12).forEach(p => {
+        const li = document.createElement('li');
+        li.textContent = `${p.name} — ${p.source} — R$ ${p.price.toFixed(2)}`;
+        ul.appendChild(li);
+      });
+      $('csvPreviewList').appendChild(ul);
+      if (csvReady.length > 12) $('csvPreviewList').append('Exibindo os primeiros 12 produtos.');
+      $('csvImport').disabled = csvReady.length === 0;
+    } catch (e) { csvFeedback.textContent = 'Erro: ' + e.message; }
+    finally { $('csvPreview').disabled = false; }
+  });
+  $('csvFile').addEventListener('change', () => {
+    csvReady = []; $('csvImport').disabled = true;
+    csvFeedback.textContent = 'Clique em Conferir arquivo para validar os produtos.';
+    $('csvPreviewList').replaceChildren();
+  });
+  $('csvImport').addEventListener('click', async () => {
+    if (csvBusy || !csvReady.length) return;
+    csvBusy = true; $('csvImport').disabled = true; $('csvPreview').disabled = true;
+    let sent = 0, failed = 0, skipped = 0;
+    try {
+      if (!(await checkAdmin())) throw new Error('Entre como administrador.');
+      // Conferência repetida antes do envio reduz duplicados entre prévia e importação.
+      const existing = await csvExistingKeys();
+      const remaining = [];
+      for (const p of csvReady) {
+        if (existing.has(csvKey(p))) { skipped++; continue; }
+        csvFeedback.textContent = `Enviando ${sent + failed + skipped + 1} de ${csvReady.length}...`;
+        const { data: sessionData, error: sessionError } = await db.auth.getSession();
+        if (sessionError || !sessionData.session?.access_token) throw new Error('Sessão expirada. Entre novamente.');
+        try {
+          const response = await fetch(API_FUNCTION_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY,
+              'Authorization': 'Bearer ' + sessionData.session.access_token },
+            body: JSON.stringify(p)
+          });
+          const body = await response.json();
+          if (!response.ok || !body.ok) throw new Error(body.error || `HTTP ${response.status}`);
+          sent++; existing.add(csvKey(p));
+        } catch (e) { failed++; remaining.push(p); }
+      }
+      csvReady = remaining;
+      csvFeedback.textContent = `Concluído: ${sent} recebidos pela API; ${skipped} repetidos; ${failed} falhas. Nenhum publicado.` +
+        (failed ? ' Clique em Enviar novamente para tentar os que falharam.' : '');
+      await loadApiQueue();
+    } catch (e) { csvFeedback.textContent = `Importação interrompida: ${e.message}. ${sent} enviados.`; }
+    finally { csvBusy = false; $('csvPreview').disabled = false; $('csvImport').disabled = csvReady.length === 0; }
   });
 
   $('productForm').addEventListener('submit', async event => {
