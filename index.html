@@ -463,13 +463,7 @@ header .nav .top-social svg{width:17px;height:17px}
 <section class="section" id="categorias"><div class="wrap">
 <div class="sectionhead"><div><h2>Explore por categoria</h2><p class="sub">Encontre o que você precisa, do seu jeito.</p></div></div>
 <div class="categories">
-<a class="cat" data-category="Tecnologia" href="#ofertas"><span class="emoji">▣</span><span>Tecnologia</span></a>
-<a class="cat" data-category="Casa e decoração" href="#ofertas"><span class="emoji">⌂</span><span>Casa e decoração</span></a>
-<a class="cat" data-category="Ferramentas" href="#ofertas"><span class="emoji">⚒</span><span>Ferramentas</span></a>
-<a class="cat" data-category="Moda e acessórios" href="#ofertas"><span class="emoji">♧</span><span>Moda e acessórios</span></a>
-<a class="cat" data-category="Beleza e cuidados" href="#ofertas"><span class="emoji">✿</span><span>Beleza e cuidados</span></a>
-<a class="cat" data-category="Esporte e lazer" href="#ofertas"><span class="emoji">♜</span><span>Esporte e lazer</span></a>
-<a class="cat" data-category="Eletrodomésticos" href="#ofertas"><span class="emoji">❄️</span><span>Eletrodomésticos</span></a>
+
 </div>
 </div></section>
 <section class="section" id="ofertas"><div class="wrap">
@@ -599,6 +593,30 @@ header .nav .top-social svg{width:17px;height:17px}
             .order('created_at', { ascending: false });
           if (error) throw error;
           products = Array.isArray(data) ? data : [];
+          const categoriesContainer = document.querySelector('.categories');
+categoriesContainer.replaceChildren();
+
+const categoryNames = [...new Set(
+  products.map(p => String(p.category || '').trim()).filter(Boolean)
+)].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+
+categoryNames.forEach(category => {
+  const link = document.createElement('a');
+  link.className = 'cat';
+  link.href = '#ofertas';
+  link.dataset.category = category;
+
+  const icon = document.createElement('span');
+  icon.className = 'emoji';
+  icon.textContent = '🛍️';
+
+  const name = document.createElement('span');
+  name.textContent = category;
+
+  link.append(icon, name);
+  categoriesContainer.appendChild(link);
+});
+          ativarCategorias();
           renderProducts();
           if (products.length) {
             status.textContent = '';
@@ -621,11 +639,12 @@ header .nav .top-social svg{width:17px;height:17px}
         renderProducts();
         document.getElementById('ofertas').scrollIntoView({ behavior: 'smooth' });
       });
-      categoryLinks.forEach(link => {
+     function ativarCategorias() {
+document.querySelectorAll('.categories .cat').forEach(link => {
         link.addEventListener('click', () => {
           const clickedCategory = link.dataset.category;
           selectedCategory = selectedCategory === clickedCategory ? '' : clickedCategory;
-          categoryLinks.forEach(item => {
+          document.querySelectorAll('.categories .cat').forEach(item => {
             const selected = item.dataset.category === selectedCategory;
             item.classList.toggle('selected', selected);
             if (selected) item.setAttribute('aria-current', 'true');
@@ -634,6 +653,7 @@ header .nav .top-social svg{width:17px;height:17px}
           renderProducts();
         });
       });
+       }
       loadProducts();
     })();
   </script>
