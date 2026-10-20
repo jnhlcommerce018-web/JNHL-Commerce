@@ -569,7 +569,6 @@ header .nav .top-social svg{width:17px;height:17px}
           body.appendChild(textElement('h3', product.name || 'Produto'));
           const priceText = formatPrice(product.price);
           if (priceText) body.appendChild(textElement('div', priceText, 'product-price'));
-          body.appendChild(textElement('p', product.description || 'Confira os detalhes no anúncio do vendedor.'));
           const affiliateUrl = safeHttpUrl(product.affiliate_url);
           if (affiliateUrl) {
             const link = textElement('a', 'Ver oferta ↗', 'btn');
